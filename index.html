@@ -1,410 +1,331 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Кулинарная книга</title>
 <style>
-:root{--acc:#b3562e;--bg:#faf6f1;--ink:#3d3428;--green:#3e7d4e}
-*{box-sizing:border-box}
-body{margin:0;font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--ink)}
-header{background:var(--acc);color:#fff;padding:22px 16px;text-align:center}
-header h1{margin:0;font-size:30px;letter-spacing:1px}
-header p{margin:6px 0 0;opacity:.85;font-size:14px}
-#cats{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:14px}
-#cats button{background:#fff;border:1px solid #d8c9b8;border-radius:20px;padding:7px 16px;font-family:inherit;font-size:14px;cursor:pointer;color:var(--ink)}
-#cats button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
-#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;max-width:1100px;margin:0 auto 40px;padding:0 16px}
-.card{background:#fff;border:1px solid #e4d8c8;border-radius:12px;overflow:hidden;cursor:pointer;transition:.15s;display:flex;flex-direction:column}
-.card:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.08)}
-.card .ph{height:130px;background:#f0e7db;display:flex;align-items:center;justify-content:center;font-size:40px}
-.card img{width:100%;height:130px;object-fit:cover}
-.card .cb{padding:12px 14px;flex:1;display:flex;flex-direction:column;gap:6px}
-.card h3{margin:0;font-size:17px;color:var(--acc)}
-.card .meta{font-size:12px;color:#8a7d6b}
-.card .nut{font-size:12px;color:var(--green)}
-#ov{display:none;position:fixed;inset:0;background:rgba(30,20,10,.55);z-index:50;overflow:auto}
-#ov.open{display:block}
-#modal{background:#fff;max-width:1080px;margin:30px auto;border-radius:14px;padding:26px 34px;min-height:60vh}
-.mphoto{width:100%;max-height:280px;object-fit:cover;border-radius:10px}
-.mph{width:100%;height:200px;background:#f0e7db;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:50px}
-#modal h2{color:var(--acc);margin:14px 0 4px}
-.pmeta{color:#8a7d6b;font-size:13px;margin-bottom:10px}
-.nutbox{background:#eef6ef;border:1px solid #cfe3d3;border-radius:10px;padding:10px 14px;margin:10px 0;font-size:14px}
-.nutbox table{border-collapse:collapse;font-size:13.5px}
-.nutbox td,.nutbox th{padding:2px 10px;text-align:left}
-.nutbox th{border-bottom:1px solid #cfe3d3;font-weight:600;color:var(--green)}
-.nutnote{font-size:11.5px;color:#5f7a66;margin-top:6px}
-.pctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:#f6efe6;border-radius:10px;padding:10px 14px;margin:10px 0;font-size:14px}
-.pctl button{border:1px solid #c9b8a2;background:#fff;border-radius:8px;padding:5px 12px;font-family:inherit;cursor:pointer;font-size:14px}
-.pctl button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
-.pctl input{width:70px;padding:5px 8px;border:1px solid #c9b8a2;border-radius:8px;font-family:inherit;font-size:14px}
-.pctl .lbl{color:#8a7d6b;font-size:13px}
-.ph{color:var(--acc);font-size:15px;margin:14px 0 4px;font-variant:small-caps;letter-spacing:.5px}
-.pi{padding:2px 0 2px 10px;border-left:2px solid #e8dcc9}
-.steps{counter-reset:st}
-.steps li{margin:7px 0;padding-left:4px}
-.btnrow{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
-.btn{background:var(--acc);color:#fff;border:none;border-radius:9px;padding:10px 20px;font-family:inherit;font-size:15px;cursor:pointer}
-.btn.sec{background:#fff;color:var(--acc);border:1px solid var(--acc)}
-#prev{display:none;position:fixed;inset:0;background:rgba(30,20,10,.7);z-index:60;overflow:auto;padding:20px}
-#prev.open{display:block}
-#prevInner{max-width:900px;margin:0 auto}
-#prev .btnrow{margin-bottom:12px}
-.sheetwrap{display:flex;flex-wrap:wrap;gap:18px;justify-content:center}
-.sheet{width:148mm;min-height:210mm;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);position:relative;padding:10mm 10mm 10mm 24mm;font-size:12.5px;line-height:1.45;overflow:hidden}
-.sheet.small{transform:scale(.92);transform-origin:top center;margin-bottom:-14mm}
-.hole{position:absolute;width:6mm;height:6mm;border-radius:50%;background:var(--bg);border:1px solid #d8c9b8;left:9mm}
-.sh h3{color:var(--acc);margin:0 0 4px;font-size:17px}
-.sh .sm{font-size:11px;color:#8a7d6b;margin-bottom:4px}
-.sh .phh{font-variant:small-caps;color:var(--acc);font-size:13px;margin:7px 0 1px}
-.sh .itm{padding-left:8px;border-left:2px solid #e8dcc9}
-.sh table.n{border-collapse:collapse;font-size:11px;margin:4px 0}
-.sh table.n td,.sh table.n th{padding:1px 8px;text-align:left;border-bottom:1px solid #eee}
-.sh .nn{font-size:9.5px;color:#777;margin-top:4px}
-.sh .cont{position:absolute;bottom:6mm;left:0;right:0;text-align:center;color:#a99;font-style:italic;font-size:11px}
-footer{text-align:center;padding:18px;color:#a89a86;font-size:13px}
-@media print{
- body>*{display:none!important}
- #printArea{display:block!important}
- @page{size:148mm 210mm;margin:0}
- .sheet{box-shadow:none;width:148mm;height:210mm;min-height:210mm;page-break-after:always}
-}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#f6efe3;font-family:Georgia,'Times New Roman',serif;color:#3d3229}
+  header{padding:34px 20px 18px;text-align:center}
+  header h1{font-size:40px;letter-spacing:1px;color:#4a3b2c;font-weight:600}
+  header .rule{width:70px;height:2px;background:#c9b287;margin:12px auto 0;border-radius:2px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:16px 20px 6px}
+  .chip{border:1px solid #c9b287;background:#fffdf8;color:#6b5a44;border-radius:20px;padding:7px 16px;cursor:pointer;font-family:inherit;font-size:14px}
+  .chip.on{background:#4a3b2c;color:#f6efe3;border-color:#4a3b2c}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:22px;padding:24px;max-width:1200px;margin:0 auto}
+  .card{background:#fffdf8;border-radius:16px;overflow:hidden;box-shadow:0 3px 14px rgba(80,60,30,.12);cursor:pointer;transition:transform .15s}
+  .card:hover{transform:translateY(-3px)}
+  .ph{position:relative;height:190px;background:linear-gradient(135deg,#e8d9bd,#d9c49a);display:flex;align-items:center;justify-content:center}
+  .ph .em{font-size:64px;opacity:.85}
+  .ph img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+  .ph.noimg img{display:none}
+  .ph .badge{position:absolute;top:10px;left:10px;background:rgba(74,59,44,.85);color:#fff;font-size:12px;padding:3px 10px;border-radius:12px;font-family:Arial,sans-serif}
+  .cbody{padding:14px 16px 16px}
+  .cbody h3{font-size:19px;margin-bottom:6px}
+  .cmeta{font-family:Arial,sans-serif;font-size:12px;color:#8a7a63;display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .ckbju{font-family:Arial,sans-serif;font-size:12px;color:#4d7a4d}
+  .mopen{margin-top:10px;background:#4a3b2c;color:#f6efe3;border:0;border-radius:8px;padding:8px 0;width:100%;font-family:Arial,sans-serif;font-size:13px;cursor:pointer}
+  /* --- модальное окно --- */
+  .modal{position:fixed;inset:0;background:rgba(40,30,20,.55);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:24px 10px;overflow:auto}
+  .modal.hidden{display:none}
+  .mbox{background:#fffdf8;border-radius:18px;max-width:1080px;width:100%;padding:26px 30px 30px;position:relative;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+  .mclose{position:absolute;top:12px;right:14px;border:0;background:none;font-size:26px;cursor:pointer;color:#8a7a63}
+  .mhead{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;margin-bottom:6px}
+  .mphoto{width:340px;height:250px;flex:0 0 auto;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#e8d9bd,#d9c49a);position:relative;display:flex;align-items:center;justify-content:center}
+  .mphoto img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+  .mphoto.noimg img{display:none}
+  .mphoto .em{font-size:80px}
+  .mtitle{flex:1;min-width:260px}
+  .mtitle h2{font-size:30px;margin-bottom:8px}
+  .portions{margin:14px 0 4px}
+  .portions .lbl{font-family:Arial,sans-serif;font-size:13px;color:#8a7a63;margin-bottom:6px}
+  .pbtn{border:1px solid #c9b287;background:#fffdf8;border-radius:8px;padding:6px 14px;margin:0 6px 6px 0;cursor:pointer;font-family:Arial,sans-serif;font-size:14px}
+  .pbtn.on{background:#4a3b2c;color:#f6efe3;border-color:#4a3b2c}
+  .pinp{width:110px;border:1px solid #c9b287;border-radius:8px;padding:7px 10px;font-family:Arial,sans-serif;font-size:14px;margin-right:10px}
+  .igr h4{margin:16px 0 6px;color:#6b5238;font-size:17px}
+  .igr ul{list-style:none}
+  .igr li{padding:4px 0;border-bottom:1px dashed #e2d5bd;font-size:15px}
+  .igr li .q{display:inline-block;min-width:110px;color:#a04424;font-weight:bold}
+  .steps{counter-reset:s;margin:8px 0 4px}
+  .steps p{counter-increment:s;padding:7px 0 7px 40px;position:relative;border-bottom:1px dashed #e2d5bd;font-size:15px;line-height:1.5}
+  .steps p::before{content:counter(s);position:absolute;left:2px;top:7px;width:26px;height:26px;border-radius:50%;background:#c9b287;color:#fffdf8;text-align:center;line-height:26px;font-family:Arial,sans-serif;font-size:13px}
+  .kbju{background:#eef7ee;border:1px solid #bcdcbc;border-radius:12px;padding:14px 16px;margin-top:20px;font-family:Arial,sans-serif;font-size:14px}
+  .kbju h4{font-family:Georgia,serif;font-size:17px;margin-bottom:8px;color:#3d5c3d}
+  .kbju table{border-collapse:collapse;width:100%}
+  .kbju td,.kbju th{padding:4px 8px;text-align:left;border-bottom:1px solid #d7e8d7}
+  .kbju th{font-weight:normal;color:#5c7a5c}
+  .kbju .note{margin-top:8px;font-size:12px;color:#5c7a5c}
+  .printbtn{margin-top:16px;background:#a04424;color:#fff;border:0;border-radius:10px;padding:12px 22px;font-family:Arial,sans-serif;font-size:15px;cursor:pointer}
+  /* --- печать --- */
+  .offscreen{position:absolute;left:-9999px;top:0;visibility:hidden}
+  .sheet{width:148mm;height:210mm;background:#fff;position:relative;page-break-after:always;box-sizing:border-box;padding:16mm 12mm 12mm 26mm;font-size:10.5pt;overflow:hidden}
+  .sheet h2{font-size:17pt;margin-bottom:2mm;color:#4a3b2c}
+  .sheet .smeta{font-family:Arial,sans-serif;font-size:8.5pt;color:#8a7a63;margin-bottom:4mm}
+  .sheet h4{margin:4mm 0 1.5mm;color:#6b5238;font-size:11pt}
+  .sheet .igr li,.sheet .steps p{font-size:9.5pt;line-height:1.45;padding:1mm 0}
+  .sheet .steps{counter-reset:s}
+  .sheet .steps p{padding-left:8mm;counter-increment:s}
+  .sheet .steps p::before{width:6mm;height:6mm;line-height:6mm;font-size:8pt;top:1.2mm;left:0}
+  .sheet .igr li{border-bottom:1px dotted #ddd}
+  .sheet .igr li .q{min-width:0;margin-right:3mm;font-weight:bold;color:#a04424}
+  .sheet .kbjuline{position:absolute;bottom:8mm;left:26mm;right:12mm;font-family:Arial,sans-serif;font-size:7.5pt;color:#4d7a4d;border-top:1px solid #cfe3cf;padding-top:2mm}
+  .hole{position:absolute;left:9mm;width:6mm;height:6mm;border-radius:50%;border:1.2px solid #c9b287;background:#fff;z-index:2}
+  .cover{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .cover .big{font-size:30pt;color:#4a3b2c;letter-spacing:2px}
+  .cover .decor{font-size:40pt;margin:10mm 0}
+  .cover .small{font-family:Arial,sans-serif;font-size:10pt;color:#8a7a63}
+  .contnote{font-family:Arial,sans-serif;font-size:8.5pt;color:#8a7a63;margin-bottom:3mm}
+  @media print{
+    body > *:not(#printArea){display:none !important}
+    .offscreen{position:static;left:0;top:0;visibility:visible}
+    body{background:#fff}
+  }
 </style>
 </head>
 <body>
-<header><h1>Кулинарная книга</h1><p>с калькулятором порций и примерным КБЖУ</p></header>
-<div id="cats"></div>
-<div id="grid"></div>
-<footer>Домашняя кулинарная книга · печать А5, отверстия под кольца 4×⌀6 мм</footer>
-<div id="ov" onclick="if(event.target===this)closeM()"><div id="modal"></div></div>
-<div id="prev" onclick="if(event.target===this)closeP()"><div id="prevInner"></div></div>
-<div id="printArea"></div>
+<header>
+  <h1>Кулинарная книга</h1>
+  <div class="rule"></div><button class="printbtn" data-act="printbook" style="margin:14px auto 0;display:block">🖨 Распечатать книгу</button>
+</header>
+<div class="chips" id="chips"></div>
+<div class="grid" id="grid"></div>
+
+<div class="modal hidden" id="modal"><div class="mbox" id="mbox"></div></div>
+<div id="printArea" class="offscreen"></div>
+
 <script>
-const R=[
-{id:1,t:'Блинчики',cat:'Завтраки',time:'40 мин',serv:8,yield:650,photo:'img/1.jpg',
- parts:[{n:'Тесто',it:[['Молоко','300','мл'],['Яйцо','2','шт.'],['Мука','180','г'],['Сахар','30','г'],['Масло растительное','30','мл'],['Соль','½','ч. л.']]}],
- steps:['Взбить яйца с сахаром и солью, влить половину молока.','Просеять муку, размешать до гладкости, добавить остальное молоко и растительное масло.','Дать тесту отдохнуть 15 минут.','Выпекать на разогретой сковороде по 1–2 минуты с каждой стороны.','Складывать стопкой, смазывая сливочным маслом.']},
-{id:2,t:'Имбирное печенье',cat:'Выпечка',time:'1,5 часа + охлаждение',serv:20,yield:480,photo:'img/2.jpg',
- parts:[{n:'Тесто',it:[['Мука','230–250','г'],['Сливочное масло','100','г'],['Сахар','100','г'],['Мёд','100','г'],['Яйцо','1','шт.'],['Сода','1','ч. л.'],['Корица','2','ч. л.'],['Имбирь молотый','2','ч. л.'],['Кардамон','½','ч. л.'],['Соль','½','ч. л.']]},
- {n:'Глазурь',it:[['Сахарная пудра','100','г'],['Сливки 33%','2–3','ст. л.']]}],
- steps:['Растереть мягкое масло с сахаром, добавить мёд, яйцо и все специи.','Всыпать муку с содой, замесить гладкое тесто.','Убрать в холодильник минимум на 1 час.','Раскатать пласт 5–6 мм, вырезать фигурки.','Выпекать при 180°C 10–12 минут.','Остудить и расписать глазурью из пудры, разведённой сливками.']},
-{id:3,t:'Тирамису',cat:'Десерты',time:'30 мин + 4 часа',serv:8,yield:1100,photo:'img/3.jpg',
- parts:[{n:'Кофе',it:[['Кофе эспрессо','250','мл'],['Сахар','30','г'],['Амаретто','30','мл']]},
- {n:'Крем',it:[['Маскарпоне','500','г'],['Желтки','4','шт.'],['Сахар','100','г'],['Сливки 33%','200','мл']]},
- {n:'Сборка',it:[['Савоярди','200','г'],['Какао-порошок','15','г']]}],
- steps:['Сварить кофе, растворить сахар, остудить и влить амаретто.','Желтки растереть с сахаром до светлой массы, вмешать маскарпоне.','Взбить холодные сливки до мягких пиков, аккуратно соединить с кремом.','Савоярди окунать в кофе буквально на 1–2 секунды и укладывать слоями с кремом.','Убрать в холодильник минимум на 4 часа.','Перед подачей присыпать какао через сито.']},
-{id:4,t:'Чизкейк',cat:'Десерты',time:'1,5 часа + 4 часа',serv:10,yield:1300,photo:'img/4.jpg',
- parts:[{n:'Основа',it:[['Печенье песочное','200','г'],['Сливочное масло','100','г']]},
- {n:'Крем',it:[['Сливочный сыр','600','г'],['Сахар','150','г'],['Яйцо','3','шт.'],['Сливки 33%','150','мл'],['Ванильный экстракт','1','ч. л.']]}],
- steps:['Печенье измельчить в крошку, смешать с растопленным маслом, утрамбовать в форму 20 см.','Выпекать основу 10 минут при 180°C.','Сыр комнатной температуры взбить с сахаром на низкой скорости.','По одному ввести яйца, затем влить сливки и ваниль, не перевзбивая.','Вылить крем на основу.','Выпекать на водяной бане при 160°C 60–70 минут: центр должен слегка дрожать.','Остудить в приоткрытой духовке, затем убрать в холодильник минимум на 4 часа.']},
-{id:5,t:'Меренговый рулет',cat:'Десерты',time:'1 час + 2 часа',serv:8,yield:700,photo:'img/5.jpg',
- parts:[{n:'Меренга',it:[['Белки','4','шт.'],['Сахарная пудра','200','г'],['Крахмал кукурузный','15','г'],['Лимонный сок','1','ч. л.']]},
- {n:'Крем',it:[['Творожный сыр','300','г'],['Сливки 33%','100','мл'],['Сахарная пудра','50','г']]},
- {n:'Начинка',it:[['Ягоды свежие','250','г']]}],
- steps:['Белки взбивать с пудрой 10–12 минут до плотных пиков, в конце добавить лимонный сок и крахмал.','Распределить меренгу на пергаменте прямоугольником 30×38 см.','Выпекать при 150°C 30 минут, затем снизить до 120°C и сушить ещё 25 минут — корочка должна стать сухой.','Полностью остудить.','Взбить сыр со сливками и пудрой.','Перевернуть меренгу, снять пергамент, намазать крем, выложить ягоды.','Свернуть рулет с помощью пергамента, убрать в холодильник на 1–2 часа.']},
-{id:6,t:'Баноффи',cat:'Десерты',time:'40 мин + 3 часа',serv:8,yield:1200,photo:'img/6.jpg',
- parts:[{n:'Основа',it:[['Печенье песочное','200','г'],['Сливочное масло','100','г']]},
- {n:'Карамель',it:[['Сгущёнка варёная','397','г'],['Сливочное масло','50','г'],['Сливки 33%','50','мл']]},
- {n:'Начинка',it:[['Банан','3','шт.'],['Сливки 33%','300','мл'],['Шоколад тёмный','30','г']]}],
- steps:['Печенье измельчить, смешать с растопленным маслом, утрамбовать в форму и выпечь 10 минут при 180°C.','Карамель прогреть с маслом до текучести, вмешать сливки, распределить по остывшей основе.','Бананы нарезать кружочками, выложить на карамель.','Взбить холодные сливки и покрыть бананы.','Натереть шоколад сверху и убрать в холодильник минимум на 3 часа.']},
-{id:7,t:'Морковный кекс',cat:'Выпечка',time:'1 час 20 мин',serv:10,yield:1200,photo:'img/7.jpg',
- parts:[{n:'Тесто',it:[['Морковь','300','г'],['Яйцо','3','шт.'],['Сахар','180','г'],['Масло растительное','180','мл'],['Мука','200','г'],['Орехи грецкие','80','г'],['Разрыхлитель','1½','ч. л.'],['Корица','2','ч. л.'],['Имбирь молотый','1','ч. л.'],['Соль','½','ч. л.']]},
- {n:'Крем',it:[['Творожный сыр','300','г'],['Сливочное масло','100','г'],['Сахарная пудра','100','г']]}],
- steps:['Морковь натереть на мелкой тёрке.','Взбить яйца с сахаром, влить растительное масло.','Смешать муку с разрыхлителем и специями, соединить с морковью и орехами.','Выпекать при 170°C 60–70 минут — шпажка из центра должна выходить сухой.','Полностью остудить на решётке.','Взбить сыр с мягким маслом и пудрой, покрыть кекс.']},
-{id:8,t:'Паштет куриный',cat:'Закуски',time:'1 час',serv:8,yield:700,photo:'img/8.jpg',
- parts:[{n:'Основной',it:[['Печень куриная','500','г'],['Лук репчатый','150','г'],['Морковь','150','г'],['Сливочное масло','100','г'],['Сливки 33%','50','мл'],['Соль','1','ч. л.'],['Перец чёрный',null,'по вкусу'],['Тимьян','1','ч. л.']]}],
- steps:['Обжарить лук и морковь на половине сливочного масла до мягкости.','Добавить печень, обжаривать 7–8 минут, посолить и приправить.','Влить сливки, прогреть 3 минуты, снять с огня и остудить.','Пробить блендером до гладкости, вмешать оставшееся размягчённое масло.','Охладить минимум 2 часа. Подавать с тостами.']},
-{id:9,t:'Домашний хлеб',cat:'Выпечка',time:'2 часа',serv:10,yield:900,photo:'img/9.jpg',
- parts:[{n:'Тесто',it:[['Мука','500','г'],['Вода тёплая','300','мл'],['Дрожжи сухие','7','г'],['Сахар','30','г'],['Соль','8','г'],['Масло сливочное','30','г']]}],
- steps:['Растворить дрожжи и сахар в тёплой воде, дать подняться 10 минут.','Соединить с мукой и солью, замешивать 8–10 минут, в конце вмешать мягкое масло.','Накрыть и оставить на 1 час — тесто должно увеличиться вдвое.','Сформовать буханку, дать расстояться ещё 40 минут.','Сделать надрезы лезвием.','Выпекать при 200°C 15 минут, затем при 180°C ещё 25 минут.','Остудить на решётке — резать тёплым можно, но мякиш лучше устоится на следующий день.']},
-{id:10,t:'Лимонные полоски',cat:'Десерты',time:'1 час + охлаждение',serv:12,yield:950,photo:'img/10.jpg',
- parts:[{n:'Тесто',it:[['Мука','250','г'],['Сливочное масло','125','г'],['Сахар','60','г'],['Желтки','2','шт.'],['Соль','¼','ч. л.']]},
- {n:'Лимонная начинка',it:[['Лимоны','3','шт.'],['Сахар','150','г'],['Яйцо','3','шт.'],['Мука','30','г']]},
- {n:'Глазурь',it:[['Сахарная пудра','80','г'],['Лимонный сок','20','мл']]}],
- steps:['Замесить песочное тесто из муки, масла, сахара, желтков и соли.','Распределить по форме 20×30 см, выпекать 15 минут при 180°C.','Для начинки смешать сок и цедру лимонов с сахаром, яйцами и мукой.','Вылить начинку на основу, выпекать ещё 20–25 минут до схватывания центра.','Полностью остудить в форме.','Полить глазурью из пудры и лимонного сока, нарезать полосками.']},
-{id:11,t:'Сырники',cat:'Завтраки',time:'30 мин',serv:4,yield:650,photo:'img/11.jpg',
- parts:[{n:'Основной',it:[['Творог 9%','500','г'],['Яйцо','1','шт.'],['Сахар','60','г'],['Мука','90','г'],['Ванильный сахар','10','г'],['Соль','¼','ч. л.']]}],
- steps:['Творог размять вилкой, смешать с яйцом, сахаром и ванилью.','Всыпать муку, замесить мягкое тесто.','Сформовать шайбочки, обвалять в муке.','Обжаривать на среднем огне по 2–3 минуты с каждой стороны.','Довести под крышкой 5 минут. Подавать со сметаной или вареньем.']},
-{id:12,t:'Крем-чиз',cat:'Кремы и начинки',time:'15 мин',serv:12,yield:600,photo:'img/12.jpg',
- parts:[{n:'Основной',it:[['Творожный сыр','500','г'],['Сливки 33%','100','мл'],['Сахарная пудра','60','г'],['Ванильный экстракт','1','ч. л.']]}],
- steps:['Все продукты хорошо охладить.','Взбить сыр с пудрой 1–2 минуты до однородности.','Влить холодные сливки, взбивать 2–3 минуты до устойчивых пиков.','Не перевзбить: крем должен держать форму, но оставаться гладким.','Использовать сразу или хранить в холодильнике до 3 дней.']},
-{id:13,t:'Вишнёвая начинка',cat:'Кремы и начинки',time:'20 мин',serv:12,yield:550,photo:'img/13.jpg',
- parts:[{n:'Основной',it:[['Вишня замороженная','500','г'],['Сахар','120','г'],['Крахмал кукурузный','20','г'],['Вода','50','мл']]}],
- steps:['Вишню вместе с соком прогреть с сахаром до кипения.','Крахмал развести в холодной воде.','Влить крахмальную воду в кипящую вишню, постоянно помешивая.','Проварить 2–3 минуты до загустения.','Полностью остудить — остывая, начинка станет заметно плотнее.']},
-{id:14,t:'Бисквит',cat:'Выпечка',time:'40 мин',serv:8,yield:450,photo:'img/14.jpg',
- parts:[{n:'Основной',it:[['Яйцо','4','шт.'],['Сахар','120','г'],['Мука','120','г'],['Ванильный сахар','10','г']]}],
- steps:['Взбить яйца с сахаром 6–8 минут до пышной светлой массы.','Просеять муку, вмешать лопаткой снизу вверх, чтобы не осадить воздух.','Вылить в форму 20 см.','Выпекать при 180°C 25–30 минут, шпажка — сухая.','Остудить 10 минут в форме, затем на решётке.','Дать выстояться 4–8 часов перед разрезанием — так бисквит не крошится.']},
-{id:15,t:'Пропитка',cat:'Кремы и начинки',time:'10 мин',serv:12,yield:300,photo:'img/15.jpg',
- parts:[{n:'Основной',it:[['Вода','150','мл'],['Молоко','100','мл'],['Сахар','60','г'],['Ванильный сахар','10','г']]}],
- steps:['Прогреть воду с сахаром до полного растворения.','Влить молоко, добавить ваниль, прогреть, не доводя до кипения.','Полностью остудить.','Наносить на бисквит кисточкой или пропитывать слоями.']},
-{id:16,t:'Крем для росписи (айсинг)',cat:'Кремы и начинки',time:'15 мин',serv:12,yield:280,photo:'img/16.jpg',
- parts:[{n:'Основной',it:[['Белки','1','шт.'],['Сахарная пудра','250','г'],['Лимонный сок','1','ч. л.']]}],
- steps:['Белок слегка разболтать вилкой с лимонным соком.','Порциями вмешивать пудру до плотной однородной консистенции.','Для заливки сделать крем чуть жидже, для росписи — плотнее (регулируется лимонным соком).','Переложить в кондитерский мешок, использовать сразу.']},
-{id:17,t:'Ньокки с грибным соусом',cat:'Основные блюда',time:'1,5 часа',serv:4,yield:1270,photo:'img/17.jpg',
- parts:[{n:'Ньокки',it:[['Картофель','4','шт.'],['Мука','100','г'],['Пармезан','60','г'],['Соль',null,'по вкусу'],['Перец чёрный',null,'по вкусу']]},
- {n:'Соус',it:[['Масло растительное','100','мл'],['Лук репчатый','1','шт.'],['Грибы','200','г'],['Сливки 33%','200','мл'],['Петрушка','5','г'],['Масло белого трюфеля','5','г'],['Хрустящий лук','5','г']]}],
- steps:['Картофель отварить в мундире до готовности и полностью остудить — тёплый картофель возьмёт лишнюю муку, и ньокки станут резиновыми.','Очистить, размять или натереть, вмешать пармезан и муку, посолить и поперчить.','Скатать колбаски толщиной около 2 см, нарезать на подушечки, при желании прижать вилкой для бороздок.','Опускать в кипящую подсоленную воду порциями; варить 1–2 минуты после всплытия, вынимать шумовкой.','Для соуса обжарить лук на растительном масле, добавить грибы и жарить до испарения жидкости.','Влить сливки, прогреть 2 минуты и снять с огня.','Соединить ньокки с соусом, полить трюфельным маслом (уже сняв с огня — иначе аромат улетучится), посыпать петрушкой и хрустящим луком.']},
-{id:18,t:'Тарталетки для закусок',cat:'Закуски',time:'30 мин',serv:12,yield:900,photo:'img/18.jpg',perPart:true,
- parts:[{n:'Основа',it:[['Тарталетки песочные','12','шт.'],['Зелень для украшения','1','пучок']]},
- {n:'1. Курица + ананас + сыр',it:[['Куриное филе отварное','150','г'],['Ананас консервированный','100','г'],['Сыр','80','г'],['Майонез','40','г']],st:'Филе и ананас нарезать кубиком, смешать с тёртым сыром и майонезом.'},
- {n:'2. Крабовые палочки + кукуруза + яйцо',it:[['Крабовые палочки','100','г'],['Кукуруза консервированная','100','г'],['Яйцо','2','шт.'],['Майонез','40','г']],st:'Всё мелко нарезать, яйцо покрошить, заправить майонезом.'},
- {n:'3. Сёмга + сливочный сыр + огурец',it:[['Сёмга слабосолёная','120','г'],['Сливочный сыр','100','г'],['Огурец','80','г']],st:'Рыбу и огурец нарезать тонко, сыр отсадить мешком.'},
- {n:'4. Грибы + лук + сливочный сыр',it:[['Шампиньоны','200','г'],['Лук репчатый','80','г'],['Сливочный сыр','100','г']],st:'Грибы с луком обжарить до румяности, остудить и смешать с сыром.'},
- {n:'5. Креветки + авокадо + лайм',it:[['Креветки','120','г'],['Авокадо','150','г'],['Лайм','½','шт.']],st:'Авокадо нарезать, сбрызнуть соком лайма, добавить готовые креветки.'},
- {n:'6. Тунец + яйцо + зелёный лук',it:[['Тунец консервированный','150','г'],['Яйцо','2','шт.'],['Лук зелёный','20','г'],['Йогурт греческий','30','г']],st:'Тунец размять, смешать с рубленым яйцом, зеленью и йогуртом.'},
- {n:'7. Свёкла + фета + грецкий орех',it:[['Свёкла отварная','150','г'],['Фета','100','г'],['Орехи грецкие','30','г']],st:'Свёклу нарезать кубиком, добавить раскрошенную фету и орехи.'},
- {n:'8. Ветчина + сыр + сладкий перец',it:[['Ветчина','120','г'],['Сыр','100','г'],['Перец сладкий','80','г'],['Майонез','30','г']],st:'Нарезать всё соломкой, смешать с майонезом.'},
- {n:'9. Печёночный паштет + маринованный огурец',it:[['Паштет печёночный','200','г'],['Огурец маринованный','60','г']],st:'Наполнить тарталетки паштетом, украсить огурчиком.'}],
- steps:['Тарталетки при желании подсушить 5 минут при 160°C — стенки станут крепче.','Смешанные начинки нарезать кубиком и заправить; кремовые отсадить кондитерским мешком.','Наполнять за 30–60 минут до подачи, чтобы стенки не размокли.','Украсить зеленью. Хранить в холодильнике.']},
-{id:19,t:'Томлёная рваная индейка',cat:'Основные блюда',time:'5 часов',serv:6,yield:1750,photo:'img/19.jpg',
- parts:[{n:'Индейка',it:[['Филе бедра индейки','1200','г'],['Лук репчатый','250','г'],['Морковь','250','г'],['Чеснок','5','зубчик'],['Масло сливочное','25','г'],['Масло оливковое','15','мл'],['Паприка сладкая','1','ч. л.'],['Соль','10','г'],['Перец чёрный свежемолотый','½','ч. л.']]},
- {n:'Соус',it:[['Бульон куриный','350','мл'],['Томатная паста','25','г'],['Горчица дижонская','25','г'],['Соевый соус','30','мл']]}],
- steps:['Смешать оливковое масло, соль, перец и паприку, хорошо натереть индейку со всех сторон.','Лук нарезать полукольцами, морковь — крупными кружочками (мини-морковь оставить целиком).','Выложить овощи на дно формы с высокими бортиками или жаровни.','Сверху уложить индейку.','Смешать бульон, томатную пасту, горчицу и соевый соус, влить в форму.','Разложить кусочки сливочного масла.','Накрыть крышкой; если её нет — лист пергамента и два слоя фольги: первый закрепить по краям, второй сверху.','Томить при 150°C (режим «верх-низ») 4 часа 30 минут.','Выключить духовку, оставить под фольгой ещё 20 минут.','Разделить мясо на крупные волокна и полить образовавшимся соусом.']}
-];
+const DATA = {"recipes": [{"id": 1, "name": "Блинчики на молоке", "cat": "Завтраки", "time": "40 мин", "portions": 4, "photo": 1, "emoji": "🥞", "loss": 0.05, "parts": [{"title": "Блины", "items": [{"q": 500, "u": "мл", "n": "молоко", "q2": null}, {"q": 2, "u": "шт", "n": "яйцо", "q2": null}, {"q": 200, "u": "г", "n": "мука", "q2": null}, {"q": 2, "u": "ст. л.", "n": "сахар", "q2": null}, {"q": 0.5, "u": "ч. л.", "n": "соль", "q2": null}, {"q": 3, "u": "ст. л.", "n": "масло растительное", "q2": null}, {"q": null, "u": null, "n": "масло растительное — для жарки", "q2": null}]}], "steps": ["Взбить яйца с сахаром и солью.", "Влить половину молока, добавить муку, размешать до однородности.", "Влить оставшееся молоко и масло, дать тесту постоять 15 минут.", "Выпекать на разогретой сковороде по 1–2 минуты с каждой стороны."], "raw": 914, "ready": 868, "per100": {"k": 206, "p": 6, "f": 9, "c": 24}, "perPortion": 448, "total": 1793, "unknown": [], "per100k": {"k": 206, "p": 6, "f": 9, "c": 24}, "portionK": 448, "totalK": 1793}, {"id": 2, "name": "Сырники", "cat": "Завтраки", "time": "30 мин", "portions": 4, "photo": 2, "emoji": "🥞", "loss": 0.05, "parts": [{"title": "Сырники", "items": [{"q": 500, "u": "г", "n": "творог", "q2": null}, {"q": 1, "u": "шт", "n": "яйцо", "q2": null}, {"q": 4, "u": "ст. л.", "n": "мука", "q2": null}, {"q": 2, "u": "ст. л.", "n": "сахар", "q2": null}, {"q": null, "u": null, "n": "соль — щепотка", "q2": null}, {"q": null, "u": null, "n": "ванилин — по вкусу", "q2": null}]}], "steps": ["Творог размять вилкой до однородности.", "Добавить яйцо, сахар, соль и муку, замесить мягкое тесто.", "Сформировать сырники, обвалять в муке.", "Обжарить на среднем огне по 2–3 минуты с каждой стороны до золотистой корочки."], "raw": 645, "ready": 613, "per100": {"k": 166, "p": 16, "f": 5, "c": 14}, "perPortion": 255, "total": 1018, "unknown": [], "per100k": {"k": 166, "p": 16, "f": 5, "c": 14}, "portionK": 255, "totalK": 1018}, {"id": 3, "name": "Куриный паштет", "cat": "Закуски", "time": "1 ч 20 мин", "portions": 8, "photo": 3, "emoji": "🥓", "loss": 0.15, "parts": [{"title": "Паштет", "items": [{"q": 500, "u": "г", "n": "куриная печень", "q2": null}, {"q": 150, "u": "г", "n": "лук", "q2": null}, {"q": 100, "u": "г", "n": "морковь", "q2": null}, {"q": 100, "u": "г", "n": "масло сливочное", "q2": null}, {"q": 50, "u": "мл", "n": "сливки 33%", "q2": null}, {"q": null, "u": null, "n": "соль, перец — по вкусу", "q2": null}]}], "steps": ["Печень промыть, крупные куски разрезать.", "Лук и морковь обжарить на масле до мягкости.", "Добавить печень, жарить 10–12 минут до готовности.", "Остудить, пробить блендером со сливками до гладкости.", "Выложить в форму, сверху растопить ложку масла, охладить 2–3 часа."], "raw": 900, "ready": 765, "per100": {"k": 222, "p": 14, "f": 16, "c": 3}, "perPortion": 212, "total": 1699, "unknown": [], "per100k": {"k": 222, "p": 14, "f": 16, "c": 3}, "portionK": 212, "totalK": 1699}, {"id": 4, "name": "Домашний хлеб", "cat": "Выпечка", "time": "3 ч", "portions": 8, "photo": 4, "emoji": "🍞", "loss": 0.15, "parts": [{"title": "Хлеб", "items": [{"q": 500, "u": "г", "n": "мука", "q2": null}, {"q": 300, "u": "мл", "n": "вода", "q2": null}, {"q": 7, "u": "г", "n": "дрожжи", "q2": null}, {"q": 10, "u": "г", "n": "соль", "q2": null}, {"q": 1, "u": "ст. л.", "n": "сахар", "q2": null}, {"q": 30, "u": "г", "n": "масло сливочное", "q2": null}]}], "steps": ["Дрожжи развести в тёплой воде с сахаром, дать подняться 10 минут.", "Замесить тесто с мукой, солью и маслом — 10 минут до гладкости.", "Оставить под плёнкой на 1–1,5 часа, пока не удвоится.", "Сформировать батон, дать подойти ещё 40 минут.", "Выпекать при 200°C 30–35 минут, остудить на решётке."], "raw": 872, "ready": 741, "per100": {"k": 269, "p": 7, "f": 4, "c": 50}, "perPortion": 249, "total": 1991, "unknown": [], "per100k": {"k": 269, "p": 7, "f": 4, "c": 50}, "portionK": 249, "totalK": 1991}, {"id": 5, "name": "Крем-чиз", "cat": "Кремы и прочее", "time": "20 мин", "portions": 10, "photo": 5, "emoji": "🧁", "loss": 0, "parts": [{"title": "Крем", "items": [{"q": 500, "u": "г", "n": "сливочный сыр", "q2": null}, {"q": 100, "u": "мл", "n": "сливки 33%", "q2": null}, {"q": 80, "u": "г", "n": "сахарная пудра", "q2": null}, {"q": null, "u": null, "n": "ванилин — по вкусу", "q2": null}]}], "steps": ["Холодные ингредиенты взбить на низкой скорости.", "Всыпать пудру порциями, взбить до плотных пиков.", "Не перевзбить: крем должен держать форму, но не расслаиваться.", "Хранить в холодильнике не дольше 2–3 дней."], "raw": 680, "ready": 680, "per100": {"k": 278, "p": 4, "f": 23, "c": 14}, "perPortion": 189, "total": 1890, "unknown": [], "per100k": {"k": 278, "p": 4, "f": 23, "c": 14}, "portionK": 189, "totalK": 1890}, {"id": 6, "name": "Вишнёвая начинка", "cat": "Кремы и прочее", "time": "25 мин", "portions": 8, "photo": 6, "emoji": "🍒", "loss": 0.1, "parts": [{"title": "Начинка", "items": [{"q": 500, "u": "г", "n": "вишня", "q2": null}, {"q": 100, "u": "г", "n": "сахар", "q2": null}, {"q": 2, "u": "ст. л.", "n": "крахмал", "q2": null}, {"q": 50, "u": "мл", "n": "вода", "q2": null}]}], "steps": ["Вишню прогреть с сахаром до выделения сока.", "Крахмал развести в холодной воде.", "Влить разведённый крахмал в вишню, помешивая, варить до загустения 2–3 минуты.", "Полностью остудить — начинка станет ещё плотнее."], "raw": 670, "ready": 603, "per100": {"k": 117, "p": 1, "f": 0, "c": 28}, "perPortion": 88, "total": 704, "unknown": [], "per100k": {"k": 117, "p": 1, "f": 0, "c": 28}, "portionK": 88, "totalK": 704}, {"id": 7, "name": "Бисквит", "cat": "Выпечка", "time": "50 мин", "portions": 8, "photo": 7, "emoji": "🎂", "loss": 0.12, "parts": [{"title": "Бисквит", "items": [{"q": 4, "u": "шт", "n": "яйцо", "q2": null}, {"q": 120, "u": "г", "n": "сахар", "q2": null}, {"q": 120, "u": "г", "n": "мука", "q2": null}, {"q": null, "u": null, "n": "ванилин — по вкусу", "q2": null}]}], "steps": ["Яйца взбить с сахаром 7–8 минут до пышной светлой массы.", "Аккуратно вмешать муку лопаткой снизу вверх.", "Вылить в форму 20 см, выпекать при 170°C 30–35 минут.", "Готовность проверить шпажкой. Готовый бисквит остудить вверх дном."], "raw": 460, "ready": 405, "per100": {"k": 299, "p": 10, "f": 7, "c": 50}, "perPortion": 151, "total": 1211, "unknown": [], "per100k": {"k": 299, "p": 10, "f": 7, "c": 50}, "portionK": 151, "totalK": 1211}, {"id": 8, "name": "Пропитка для бисквита", "cat": "Кремы и прочее", "time": "10 мин", "portions": 8, "photo": 8, "emoji": "💧", "loss": 0.2, "parts": [{"title": "Пропитка", "items": [{"q": 200, "u": "мл", "n": "вода", "q2": null}, {"q": 4, "u": "ст. л.", "n": "сахар", "q2": null}, {"q": 1, "u": "ч. л.", "n": "лимонный сок", "q2": null}]}], "steps": ["Довести воду с сахаром до кипения, помешивая.", "Проварить 2 минуты, снять с огня.", "Добавить лимонный сок, остудить.", "Пропитывать бисквит сиропом комнатной температуры."], "raw": 306, "ready": 245, "per100": {"k": 159, "p": 0, "f": 0, "c": 41}, "perPortion": 49, "total": 388, "unknown": [], "per100k": {"k": 159, "p": 0, "f": 0, "c": 41}, "portionK": 49, "totalK": 388}, {"id": 9, "name": "Крем для росписи", "cat": "Кремы и прочее", "time": "15 мин", "portions": 1, "photo": 9, "emoji": "🖌️", "loss": 0, "parts": [{"title": "Крем", "items": [{"q": 1, "u": "шт", "n": "белок", "q2": null}, {"q": 200, "u": "г", "n": "сахарная пудра", "q2": null}, {"q": 0.5, "u": "ч. л.", "n": "лимонный сок", "q2": null}]}], "steps": ["Белок слегка взбить вилкой — не в пену.", "Вмешать пудру порциями до плотной консистенции.", "Добавить лимонный сок, регулировать густоту пудрой или соком.", "Хранить под влажным полотенцем, чтобы не заветривался."], "raw": 238, "ready": 238, "per100": {"k": 326, "p": 2, "f": 0, "c": 82}, "perPortion": 777, "total": 777, "unknown": [], "per100k": {"k": 326, "p": 2, "f": 0, "c": 82}, "portionK": 777, "totalK": 777}, {"id": 10, "name": "Имбирное печенье", "cat": "Выпечка", "time": "1 ч 30 мин", "portions": 20, "photo": 10, "emoji": "🍪", "loss": 0.15, "parts": [{"title": "Печенье", "items": [{"q": 230, "u": "г", "n": "мука", "q2": 250}, {"q": 100, "u": "г", "n": "масло сливочное", "q2": null}, {"q": 100, "u": "г", "n": "сахар", "q2": null}, {"q": 1, "u": "шт", "n": "яйцо", "q2": null}, {"q": 2, "u": "ст. л.", "n": "мёд", "q2": null}, {"q": 1, "u": "ч. л.", "n": "корица", "q2": null}, {"q": 1, "u": "ч. л.", "n": "имбирь", "q2": null}, {"q": 0.5, "u": "ч. л.", "n": "кардамон", "q2": null}, {"q": 1, "u": "ч. л.", "n": "сода", "q2": null}, {"q": 0.5, "u": "ч. л.", "n": "соль", "q2": null}]}], "steps": ["Масло растереть с сахаром, добавить яйцо и мёд.", "Муку смешать со специями и содой, всыпать в масляную смесь.", "Замесить тесто, завернуть в плёнку, охладить 30 минут.", "Раскатать в пласт 5–6 мм, вырезать фигурки.", "Выпекать при 180°C 10–12 минут — печенье должно остаться мягким в центре.", "Полностью остудить на решётке: горячим оно хрупкое."], "raw": 562, "ready": 477, "per100": {"k": 458, "p": 7, "f": 19, "c": 64}, "perPortion": 109, "total": 2185, "unknown": [], "per100k": {"k": 458, "p": 7, "f": 19, "c": 64}, "portionK": 109, "totalK": 2185}, {"id": 11, "name": "Морковный кекс", "cat": "Выпечка", "time": "1 ч 30 мин", "portions": 10, "photo": 11, "emoji": "🥕", "loss": 0.12, "parts": [{"title": "Тесто", "items": [{"q": 300, "u": "г", "n": "морковь", "q2": null}, {"q": 3, "u": "шт", "n": "яйцо", "q2": null}, {"q": 150, "u": "мл", "n": "масло растительное", "q2": null}, {"q": 200, "u": "г", "n": "сахар", "q2": null}, {"q": 250, "u": "г", "n": "мука", "q2": null}, {"q": 2, "u": "ч. л.", "n": "разрыхлитель", "q2": null}, {"q": 1, "u": "ч. л.", "n": "корица", "q2": null}, {"q": 100, "u": "г", "n": "грецкие орехи", "q2": null}]}, {"title": "Крем", "items": [{"q": 300, "u": "г", "n": "сливочный сыр", "q2": null}, {"q": 80, "u": "г", "n": "сахарная пудра", "q2": null}, {"q": 100, "u": "мл", "n": "сливки 33%", "q2": null}]}], "steps": ["Морковь натереть на мелкой тёрке.", "Яйца взбить с сахаром и маслом, вмешать морковь.", "Добавить муку, разрыхлитель, корицу и орехи.", "Выпекать в форме 20 см при 170°C 50–60 минут.", "Полностью остудить, покрыть кремом из взбитого сыра со сливками и пудрой."], "raw": 1660, "ready": 1461, "per100": {"k": 368, "p": 6, "f": 24, "c": 34}, "perPortion": 537, "total": 5369, "unknown": [], "per100k": {"k": 368, "p": 6, "f": 24, "c": 34}, "portionK": 537, "totalK": 5369}, {"id": 12, "name": "Лимонные полоски", "cat": "Выпечка", "time": "1 ч 30 мин", "portions": 12, "photo": 12, "emoji": "🍋", "loss": 0.12, "parts": [{"title": "Тесто", "items": [{"q": 200, "u": "г", "n": "мука", "q2": null}, {"q": 120, "u": "г", "n": "масло сливочное", "q2": null}, {"q": 60, "u": "г", "n": "сахарная пудра", "q2": null}, {"q": 0.25, "u": "ч. л.", "n": "соль", "q2": null}]}, {"title": "Лимонная начинка", "items": [{"q": 4, "u": "шт", "n": "яйцо", "q2": null}, {"q": 200, "u": "г", "n": "сахар", "q2": null}, {"q": 120, "u": "мл", "n": "лимонный сок", "q2": null}, {"q": 40, "u": "г", "n": "мука", "q2": null}]}, {"title": "Глазурь", "items": [{"q": 60, "u": "г", "n": "сахарная пудра", "q2": null}, {"q": 2, "u": "ст. л.", "n": "лимонный сок", "q2": null}]}], "steps": ["Песочное тесто замесить, распределить по форме 20×30 см, выпекать основу 15 минут при 180°C.", "Яйца взбить с сахаром, добавить сок, цедру и муку.", "Влить начинку на тёплую основу, выпекать ещё 20–25 минут до схватывания.", "Остудить, затем — обязательно — в холодильник 2 часа.", "Разрезать на полоски холодным ножом, полить глазурью."], "raw": 1058, "ready": 931, "per100": {"k": 355, "p": 6, "f": 14, "c": 53}, "perPortion": 276, "total": 3308, "unknown": [], "per100k": {"k": 355, "p": 6, "f": 14, "c": 53}, "portionK": 276, "totalK": 3308}, {"id": 13, "name": "Меренговый рулет", "cat": "Десерты", "time": "1 ч 40 мин", "portions": 8, "photo": 13, "emoji": "🍓", "loss": 0.2, "parts": [{"title": "Меренга", "items": [{"q": 4, "u": "шт", "n": "белок", "q2": null}, {"q": 200, "u": "г", "n": "сахарная пудра", "q2": null}, {"q": 1, "u": "ст. л.", "n": "крахмал", "q2": null}, {"q": 1, "u": "ч. л.", "n": "лимонный сок", "q2": null}]}, {"title": "Крем", "items": [{"q": 300, "u": "мл", "n": "сливки 33%", "q2": null}, {"q": 50, "u": "г", "n": "сахарная пудра", "q2": null}, {"q": 200, "u": "г", "n": "творожный сыр", "q2": null}]}, {"title": "Начинка", "items": [{"q": 250, "u": "г", "n": "клубника", "q2": null}]}], "steps": ["Белки взбить с пудрой до плотных пиков, вмешать крахмал и сок.", "Распределить по пергаменту пластом 30×40 см, выпекать при 150°C 25–30 минут.", "Готовую меренгу остудить под пергаментом 10 минут, перевернуть на новый лист.", "Взбить сливки с пудрой, вмешать сыр.", "Распределить крем, выложить клубнику, свернуть рулет с помощью пергамента.", "Охладить минимум 2 часа."], "raw": 1156, "ready": 925, "per100": {"k": 287, "p": 4, "f": 17, "c": 31}, "perPortion": 332, "total": 2655, "unknown": [], "per100k": {"k": 287, "p": 4, "f": 17, "c": 31}, "portionK": 332, "totalK": 2655}, {"id": 14, "name": "Тирамису", "cat": "Десерты", "time": "40 мин + 4 ч", "portions": 8, "photo": 14, "emoji": "☕", "loss": 0.03, "parts": [{"title": "Кофе", "items": [{"q": 250, "u": "мл", "n": "эспрессо", "q2": null}]}, {"title": "Крем", "items": [{"q": 500, "u": "г", "n": "маскарпоне", "q2": null}, {"q": 200, "u": "мл", "n": "сливки 33%", "q2": null}, {"q": 80, "u": "г", "n": "сахарная пудра", "q2": null}]}, {"title": "Сборка", "items": [{"q": 200, "u": "г", "n": "савоярди", "q2": null}, {"q": 2, "u": "ст. л.", "n": "какао", "q2": null}]}], "steps": ["Сварить кофе и полностью остудить.", "Маскарпоне размять, вмешать пудру.", "Сливки взбить до мягких пиков, аккуратно соединить с сыром.", "Савоярди быстро — на 1–2 секунды — окунуть в кофе.", "Выложить слоями: печенье, крем, печенье, крем.", "Охладить минимум 4 часа, перед подачей просеять какао."], "raw": 1244, "ready": 1207, "per100": {"k": 332, "p": 5, "f": 26, "c": 21}, "perPortion": 501, "total": 4004, "unknown": [], "per100k": {"k": 332, "p": 5, "f": 26, "c": 21}, "portionK": 501, "totalK": 4004}, {"id": 15, "name": "Чизкейк", "cat": "Десерты", "time": "2 ч + 4 ч", "portions": 10, "photo": 15, "emoji": "🍰", "loss": 0.08, "parts": [{"title": "Основа", "items": [{"q": 200, "u": "г", "n": "печенье", "q2": null}, {"q": 100, "u": "г", "n": "масло сливочное", "q2": null}]}, {"title": "Крем", "items": [{"q": 600, "u": "г", "n": "сливочный сыр", "q2": null}, {"q": 150, "u": "г", "n": "сахар", "q2": null}, {"q": 3, "u": "шт", "n": "яйцо", "q2": null}, {"q": 150, "u": "мл", "n": "сливки 33%", "q2": null}]}], "steps": ["Печенье измельчить в крошку, смешать с растопленным маслом.", "Утрамбовать в форму 20 см, выпекать основу 10 минут при 170°C.", "Сыр с сахаром размешать лопаткой — без взбивания, чтобы не треснул.", "По одному вмешать яйца, затем сливки.", "Вылить на основу, выпекать на водяной бане при 160°C 60–70 минут — центр должен слегка дрожать.", "Остудить в приоткрытой духовке, затем 4 часа в холодильнике."], "raw": 1365, "ready": 1256, "per100": {"k": 361, "p": 6, "f": 27, "c": 24}, "perPortion": 453, "total": 4533, "unknown": [], "per100k": {"k": 361, "p": 6, "f": 27, "c": 24}, "portionK": 453, "totalK": 4533}, {"id": 16, "name": "Баноффи", "cat": "Десерты", "time": "1 ч + 3 ч", "portions": 8, "photo": 16, "emoji": "🍌", "loss": 0.1, "parts": [{"title": "Основа", "items": [{"q": 200, "u": "г", "n": "печенье", "q2": null}, {"q": 100, "u": "г", "n": "масло сливочное", "q2": null}]}, {"title": "Карамель", "items": [{"q": 380, "u": "г", "n": "варёная сгущёнка", "q2": null}]}, {"title": "Начинка", "items": [{"q": 3, "u": "шт", "n": "банан", "q2": null}, {"q": 300, "u": "мл", "n": "сливки 33%", "q2": null}, {"q": 30, "u": "г", "n": "сахарная пудра", "q2": null}, {"q": 50, "u": "г", "n": "шоколад", "q2": null}]}], "steps": ["Основа: крошка печенья с маслом, утрамбовать, охладить 30 минут.", "Карамель разогреть до текучести, выложить на основу слоем 5 мм.", "Бананы нарезать кружочками, выложить на карамель.", "Сливки взбить с пудрой, покрыть бананы.", "Тёртый шоколад — сверху. Охладить минимум 3 часа."], "raw": 1420, "ready": 1278, "per100": {"k": 366, "p": 4, "f": 22, "c": 37}, "perPortion": 585, "total": 4678, "unknown": [], "per100k": {"k": 366, "p": 4, "f": 22, "c": 37}, "portionK": 585, "totalK": 4678}, {"id": 17, "name": "Ньокки с грибным соусом", "cat": "Основные блюда", "time": "1 ч 20 мин", "portions": 4, "photo": 17, "emoji": "🥔", "loss": 0.07, "parts": [{"title": "Ньокки", "items": [{"q": 4, "u": "шт", "n": "картофель", "q2": null}, {"q": 100, "u": "г", "n": "мука", "q2": null}, {"q": 60, "u": "г", "n": "пармезан", "q2": null}, {"q": null, "u": null, "n": "соль, перец — по вкусу", "q2": null}]}, {"title": "Соус", "items": [{"q": 100, "u": "мл", "n": "масло растительное", "q2": null}, {"q": 1, "u": "шт", "n": "лук", "q2": null}, {"q": 200, "u": "г", "n": "шампиньоны", "q2": null}, {"q": 200, "u": "мл", "n": "сливки 33%", "q2": null}, {"q": 5, "u": "г", "n": "петрушка", "q2": null}, {"q": 5, "u": "г", "n": "масло белого трюфеля", "q2": null}, {"q": 5, "u": "г", "n": "хрустящий лук", "q2": null}]}], "steps": ["Картофель отварить в мундире и полностью остудить — тёплый картофель возьмёт лишнюю муку.", "Очистить, натереть или размять, вмешать половину пармезана и муку.", "Скатать колбаски толщиной ~2 см, нарезать на подушечки, при желании — придавить вилкой.", "Варить в кипящей подсоленной воде: ньокки готовы через 1–2 минуты после всплытия.", "Обжарить на масле до румяной корочки.", "Соус: лук спассеровать, добавить грибы, жарить до испарения жидкости.", "Влить сливки, прогреть, посолить. Снять с огня — и только потом добавить трюфельное масло, иначе аромат улетучится.", "Подавать ньокки под соусом с пармезаном, петрушкой и хрустящим луком."], "raw": 1350, "ready": 1256, "per100": {"k": 218, "p": 5, "f": 16, "c": 14}, "perPortion": 683, "total": 2733, "unknown": ["хрустящий лук"], "per100k": {"k": 219, "p": 5, "f": 16, "c": 14}, "portionK": 688, "totalK": 2753}, {"id": 18, "name": "Тарталетки для закусок", "cat": "Закуски", "time": "30 мин", "portions": 12, "photo": 18, "emoji": "🥟", "loss": 0, "parts": [{"title": "Основа", "items": [{"q": 12, "u": "шт", "n": "тарталетки", "q2": null}, {"q": null, "u": null, "n": "зелень — для украшения", "q2": null}]}, {"title": "1. Курица + ананас + сыр", "items": [{"q": 150, "u": "г", "n": "куриное филе", "q2": null}, {"q": 100, "u": "г", "n": "ананас", "q2": null}, {"q": 80, "u": "г", "n": "сыр", "q2": null}, {"q": 2, "u": "ст. л.", "n": "майонез", "q2": null}]}, {"title": "2. Крабовые палочки + кукуруза + яйцо", "items": [{"q": 150, "u": "г", "n": "крабовые палочки", "q2": null}, {"q": 100, "u": "г", "n": "кукуруза", "q2": null}, {"q": 2, "u": "шт", "n": "яйцо", "q2": null}, {"q": 2, "u": "ст. л.", "n": "майонез", "q2": null}]}, {"title": "3. Сёмга + сливочный сыр + огурец", "items": [{"q": 120, "u": "г", "n": "сёмга", "q2": null}, {"q": 100, "u": "г", "n": "сливочный сыр", "q2": null}, {"q": 1, "u": "шт", "n": "огурец", "q2": null}]}, {"title": "4. Грибы + лук + сливочный сыр", "items": [{"q": 200, "u": "г", "n": "шампиньоны", "q2": null}, {"q": 1, "u": "шт", "n": "лук", "q2": null}, {"q": 100, "u": "г", "n": "сливочный сыр", "q2": null}, {"q": 1, "u": "ст. л.", "n": "масло растительное", "q2": null}]}, {"title": "5. Креветки + авокадо + лайм", "items": [{"q": 150, "u": "г", "n": "креветки", "q2": null}, {"q": 1, "u": "шт", "n": "авокадо", "q2": null}, {"q": 0.5, "u": "шт", "n": "лайм", "q2": null}]}, {"title": "6. Тунец + яйцо + зелёный лук", "items": [{"q": 1, "u": "банка", "n": "тунец", "q2": null}, {"q": 2, "u": "шт", "n": "яйцо", "q2": null}, {"q": 15, "u": "г", "n": "зелёный лук", "q2": null}, {"q": 2, "u": "ст. л.", "n": "йогурт", "q2": null}]}, {"title": "7. Свёкла + фета + грецкий орех", "items": [{"q": 2, "u": "шт", "n": "свёкла", "q2": null}, {"q": 100, "u": "г", "n": "фета", "q2": null}, {"q": 30, "u": "г", "n": "грецкие орехи", "q2": null}]}, {"title": "8. Ветчина + сыр + сладкий перец", "items": [{"q": 120, "u": "г", "n": "ветчина", "q2": null}, {"q": 80, "u": "г", "n": "сыр", "q2": null}, {"q": 1, "u": "шт", "n": "сладкий перец", "q2": null}, {"q": 2, "u": "ст. л.", "n": "майонез", "q2": null}]}, {"title": "9. Печёночный паштет + огурец", "items": [{"q": 150, "u": "г", "n": "паштет", "q2": null}, {"q": 1, "u": "шт", "n": "маринованный огурец", "q2": null}]}], "steps": ["Готовые песочные тарталетки можно 5 минут подрумянить в духовке при 160°C — так они хрустят дольше.", "Все ингредиенты нарезать мелким кубиком или соломкой.", "Смешанные начинки (1, 2, 6, 8) заправить майонезом или йогуртом.", "Грибную начинку полностью остудить перед наполнением.", "Кремовые начинки (3, 4) отсадить кондитерским мешком.", "Наполнять тарталетки за 30–60 минут до подачи, иначе стенки размокнут.", "Украсить зеленью перед подачей."], "raw": 3452, "ready": 3452, "per100": {"k": 179, "p": 9, "f": 13, "c": 7}, "perPortion": 515, "total": 6180, "unknown": [], "per100k": {"k": 155, "p": 9, "f": 12, "c": 4}, "portionK": 444, "totalK": 5331}, {"id": 19, "name": "Томлёная рваная индейка", "cat": "Основные блюда", "time": "5 ч", "portions": 6, "photo": 19, "emoji": "🍗", "loss": 0.2, "parts": [{"title": "Индейка", "items": [{"q": 1200, "u": "г", "n": "индейка", "q2": null}, {"q": 250, "u": "г", "n": "лук", "q2": null}, {"q": 250, "u": "г", "n": "морковь", "q2": null}, {"q": 5, "u": "зубчик", "n": "чеснок", "q2": null}, {"q": 25, "u": "г", "n": "масло сливочное", "q2": null}, {"q": 15, "u": "мл", "n": "оливковое масло", "q2": null}, {"q": 1, "u": "ч. л.", "n": "паприка", "q2": null}, {"q": 10, "u": "г", "n": "соль", "q2": null}, {"q": 0.5, "u": "ч. л.", "n": "перец", "q2": null}]}, {"title": "Соус", "items": [{"q": 350, "u": "мл", "n": "бульон", "q2": null}, {"q": 25, "u": "г", "n": "томатная паста", "q2": null}, {"q": 25, "u": "г", "n": "горчица дижонская", "q2": null}, {"q": 30, "u": "мл", "n": "соевый соус", "q2": null}]}], "steps": ["Смешать оливковое масло, соль, перец и паприку. Хорошо натереть индейку со всех сторон.", "Лук нарезать полукольцами, морковь — крупными кружочками (мини-морковь оставить целиком).", "Выложить овощи на дно формы с высокими бортами или жаровни.", "Сверху уложить индейку.", "Смешать все ингредиенты для соуса и влить в форму.", "Добавить сливочное масло небольшими кусочками.", "Если у формы есть крышка — накрыть ею. Если нет — положить на мясо лист пергамента и плотно накрыть двумя листами фольги: первый хорошо закрепить по краям, второй — сверху.", "Томить в разогретой до 150°C духовке 4 часа 30 минут, режим «верх-низ».", "Выключить духовку и оставить индейку под фольгой ещё на 20 минут.", "Разделить мясо на крупные волокна и полить образовавшимся соусом."], "raw": 2219, "ready": 1775, "per100": {"k": 146, "p": 14, "f": 8, "c": 3}, "perPortion": 432, "total": 2594, "unknown": [], "per100k": {"k": 146, "p": 14, "f": 8, "c": 3}, "portionK": 432, "totalK": 2594}], "cats": ["Завтраки", "Выпечка", "Десерты", "Основные блюда", "Закуски", "Кремы и прочее"], "catIcon": {"Завтраки": "🥞", "Выпечка": "🥐", "Десерты": "🍰", "Основные блюда": "🍽️", "Закуски": "🧀", "Кремы и прочее": "🥣"}};
+let cur = null, curK = 1;
 
-const HOLES=[27.5,72.5,137.5,182.5];
-const FS={'½':0.5,'¼':0.25,'¾':0.75,'⅓':1/3,'⅔':2/3,'⅛':0.125};
-const NUTR={'мука':{k:335,p:10,f:1,c:70},'сахар':{k:387,p:0,f:0,c:100},'сахарная пудра':{k:389,p:0,f:0,c:98},'яйцо':{k:143,p:12.7,f:9.5,c:0.7},'белк':{k:48,p:11,f:0.2,c:0.7},'желтк':{k:322,p:16,f:31,c:3.6},'молоко':{k:52,p:2.9,f:2.5,c:4.7},'сливки':{k:309,p:2.4,f:33,c:2.8},'масло сливочное':{k:748,p:0.5,f:82.5,c:0.8},'масло растительное':{k:899,p:0,f:99.9,c:0},'масло оливковое':{k:898,p:0,f:99.8,c:0},'масло белого трюфеля':{k:899,p:0,f:99.9,c:0},'мёд':{k:304,p:0.3,f:0,c:82},'сода':{k:0,p:0,f:0,c:0},'корица':{k:247,p:4,f:1.2,c:60},'имбирь':{k:335,p:9,f:4.2,c:71},'кардамон':{k:311,p:11,f:7,c:68},'ванильный экстракт':{k:288,p:0,f:0,c:13},'ванильный сахар':{k:390,p:0,f:0,c:96},'савоярди':{k:396,p:9,f:3,c:79},'кофе':{k:2,p:0.2,f:0,c:0},'амаретто':{k:260,p:0,f:0,c:28},'маскарпоне':{k:450,p:6,f:44,c:4},'какао':{k:228,p:20,f:13,c:58},'печенье песочное':{k:470,p:7,f:22,c:62},'сливочный сыр':{k:253,p:6,f:25,c:3},'сгущёнка варёная':{k:328,p:6,f:6.5,c:62},'шоколад':{k:550,p:7,f:34,c:52},'крахмал':{k:330,p:0.3,f:0.1,c:80},'банан':{k:96,p:1.5,f:0.2,c:21},'ягоды':{k:45,p:1,f:0.4,c:9},'морковь':{k:35,p:1.3,f:0.2,c:7},'орехи грецкие':{k:650,p:15,f:65,c:10},'разрыхлитель':{k:0,p:0,f:0,c:0},'печень куриная':{k:137,p:20,f:6,c:1},'лук репчатый':{k:41,p:1.1,f:0.1,c:9},'чеснок':{k:143,p:6.4,f:0.5,c:33},'дрожжи':{k:325,p:40,f:8,c:40},'вода':{k:0,p:0,f:0,c:0},'бульон':{k:15,p:2,f:0.5,c:0},'томатная паста':{k:82,p:4.3,f:0.5,c:15},'горчица':{k:66,p:4,f:4,c:5},'соевый соус':{k:53,p:8,f:0.1,c:5},'творог':{k:159,p:17,f:9,c:3},'лайм':{k:30,p:0.7,f:0.2,c:10},'авокадо':{k:160,p:2,f:15,c:9},'креветки':{k:95,p:20,f:1.5,c:0},'крабовые палочки':{k:97,p:6,f:4,c:10},'кукуруза':{k:119,p:3,f:1,c:23},'сёмга':{k:202,p:24,f:11,c:0},'огурец':{k:15,p:0.8,f:0.1,c:3},'шампиньоны':{k:27,p:4,f:1,c:0},'тунец':{k:116,p:26,f:0.8,c:0},'йогурт':{k:66,p:10,f:1.5,c:4},'фета':{k:264,p:14,f:21,c:4},'свёкла':{k:44,p:1.6,f:0.2,c:10},'ветчина':{k:230,p:17,f:17,c:2},'перец сладкий':{k:27,p:1.3,f:0.3,c:5},'паштет':{k:260,p:12,f:22,c:4},'тарталетки':{k:450,p:7,f:20,c:60},'зелень':{k:36,p:3,f:0.8,c:6},'куриное филе':{k:165,p:31,f:3.6,c:0},'ананас':{k:48,p:0.4,f:0.2,c:11},'сыр':{k:356,p:25,f:27,c:2},'майонез':{k:680,p:2,f:75,c:3},'индейки':{k:145,p:20,f:7,c:0},'пармезан':{k:392,p:33,f:28,c:0},'грибы':{k:27,p:4,f:1,c:0},'лимон':{k:29,p:0.8,f:0.2,c:3},'лимонный сок':{k:22,p:0.4,f:0.2,c:7},'хрустящий лук':{k:520,p:7,f:35,c:55},'петрушка':{k:36,p:3,f:0.8,c:6},'лук зелёный':{k:20,p:1.2,f:0.2,c:4},'соль':{k:0,p:0,f:0,c:0},'перец':{k:0,p:0,f:0,c:0},'тимьян':{k:0,p:0,f:0,c:0}};
-const PIECE=[['белк',35],['желтк',18],['яйцо',55],['картофель',150],['лук репчатый',100],['морковь',100],['лимон',100],['лайм',60],['банан',120],['тарталетки',20]];
-const OV={'мёд':[30,10],'сахар':[25,8],'мука':[28,8],'соль':[18,6],'майонез':[25,10],'томатная паста':[25,10],'соевый':[16,6],'горчица':[20,8],'ванильный экстракт':[5,2],'корица':[10,3],'имбирь':[10,3],'кардамон':[10,3],'паприка':[10,3],'перец':[6,2],'тимьян':[6,2],'сода':[9,4],'разрыхлитель':[9,4],'лимонный сок':[20,5],'какао':[10,3],'дрожжи':[6,3],'амаретто':[20,6],'кофе':[20,6]};
+const HOLES = [27.5, 72.5, 137.5, 182.5];
 
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
-function fmtN(v){return String(v).replace('.',',')}
-function parseQty(q){
- if(q==null)return null;
- if(typeof q==='number')return q;
- let s=q;
- for(const f in FS){s=s.split(f).join('+'+FS[f])}
- const seg=s.split(/[–—-]/);
- const one=t=>{let m=t.match(/\d+(?:[.,]\d+)?/g);if(!m)return null;let sum=0;for(const x of m)sum+=parseFloat(x.replace(',','.'));return sum};
- const vals=seg.map(one);
- if(vals.length>1)return{lo:vals[0],hi:vals[1]};
- return vals[0];
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function renderChips(){
+  const box = document.getElementById('chips');
+  let h = '<button class="chip on" data-act="filter" data-cat="all">Все</button>';
+  DATA.cats.forEach(c=>{h += '<button class="chip" data-act="filter" data-cat="'+c+'">'+DATA.catIcon[c]+' '+c+'</button>';});
+  box.innerHTML = h;
 }
-function smartRound(v){
- if(v<=0)return 0;
- if(v<1)return Math.round(v*4)/4;
- if(v<10)return Math.round(v*2)/2;
- if(v<100)return Math.round(v);
- return Math.round(v/5)*5;
-}
-function fmtQ(v){
- if(Math.abs(v-Math.round(v))<1e-9)return String(Math.round(v));
- if(v<1){const m={'0.25':'¼','0.5':'½','0.75':'¾'};const k=v.toFixed(2);if(m[k])return m[k];if(Math.abs(v-1/3)<0.05)return '⅓';if(Math.abs(v-2/3)<0.05)return '⅔';return fmtN(+v.toFixed(2))}
- return fmtN(+v.toFixed(2));
-}
-function scaleQty(q,k){
- const p=parseQty(q);
- if(p==null)return null;
- const sc=x=>fmtQ(smartRound(x*k));
- if(typeof p==='object')return sc(p.lo)+'–'+sc(p.hi);
- return sc(p);
-}
-function dbKey(name){
- const n=name.toLowerCase();
- const keys=Object.keys(NUTR).sort((a,b)=>b.length-a.length);
- for(const key of keys){if(n.indexOf(key)>=0)return key}
- return null;
-}
-function gramsOf(name,q,u){
- const p=parseQty(q);
- const v=p==null?0:(typeof p==='object'?(p.lo+p.hi)/2:p);
- if(u==='г'||u==='мл')return v;
- if(u==='кг')return v*1000;
- const n=name.toLowerCase();
- if(u==='зубчик')return v*6;
- if(u==='пучок')return v*30;
- if(u==='шт.'){for(const[k,g]of PIECE){if(n.indexOf(k)>=0)return v*g}return 0}
- if(u==='ст. л.'||u==='ч. л.'){
-  let d=u==='ст. л.'?20:5;
-  for(const kk in OV){if(n.indexOf(kk)>=0){d=u==='ст. л.'?OV[kk][0]:OV[kk][1];break}}
-  return v*d;
- }
- return 0;
-}
-function partNutr(it){
- let s={k:0,p:0,f:0,c:0,w:0};
- for(const[n,q,u]of it){
-  const g=gramsOf(n,q,u);
-  s.w+=g;
-  const key=dbKey(n);
-  if(!key)continue;
-  const d=NUTR[key];
-  s.k+=g*d.k/100;s.p+=g*d.p/100;s.f+=g*d.f/100;s.c+=g*d.c/100;
- }
- return s;
-}
-function recipeNutr(r){
- let s={k:0,p:0,f:0,c:0,w:0};
- for(const pt of r.parts){const d=partNutr(pt.it);s.k+=d.k;s.p+=d.p;s.f+=d.f;s.c+=d.c;s.w+=d.w}
- return s;
-}
-function photoTagH(r){return '<img src="'+r.photo+'" alt="" style="width:100%;max-height:48mm;object-fit:cover;border-radius:6px" onerror="this.style.display=\'none\'">'}
+
 function partsLabel(r){
- if(r.perPart)return (r.parts.length-1)+' начинок';
- if(r.parts.length===1)return 'базовый рецепт';
- const n=r.parts.length;const m10=n%10,m100=n%100;
- if(m10===1&&m100!==11)return n+' часть';
- if(m10>=2&&m10<=4&&(m100<12||m100>14))return n+' части';
- return n+' частей';
+  if(r.parts.length===1) return 'базовый рецепт';
+  if(r.id===18) return r.parts.length-1 + ' начинок';
+  return r.parts.length + ' части';
 }
-function photoTag(r,cls){
- return '<img class="'+cls+'" src="'+r.photo+'" alt="" onerror="this.outerHTML=\'<div class=&quot;'+(cls==='mphoto'?'mph':'ph')+'&quot;>🍽</div>\'">';
-}
-function nutrHTML(r){
- const s=recipeNutr(r);
- const y=r.yield;
- const k100=Math.round(s.k/y*100),p100=Math.round(s.p/y*100),f100=Math.round(s.f/y*100),c100=Math.round(s.c/y*100);
- const ps=r.serv;
- let h='<div class="nutbox"><b>КБЖУ (примерно)</b><table>';
- if(r.perPart){
-  h+='<tr><th>Начинка</th><th>ккал/100 г</th><th>Б</th><th>Ж</th><th>У</th></tr>';
-  for(const pt of r.parts.slice(1)){
-   const d=partNutr(pt.it);
-   h+='<tr><td>'+esc(pt.n)+'</td><td>'+Math.round(d.k/d.w*100)+'</td><td>'+Math.round(d.p/d.w*100)+'</td><td>'+Math.round(d.f/d.w*100)+'</td><td>'+Math.round(d.c/d.w*100)+'</td></tr>';
-  }
-  h+='</table>';
- }else{
-  h+='<tr><th></th><th>ккал</th><th>Б</th><th>Ж</th><th>У</th></tr>';
-  h+='<tr><td>на 100 г готового</td><td>'+k100+'</td><td>'+p100+'</td><td>'+f100+'</td><td>'+c100+'</td></tr>';
-  h+='<tr><td>на порцию ('+ps+')</td><td>'+Math.round(s.k/ps)+'</td><td>'+Math.round(s.p/ps)+'</td><td>'+Math.round(s.f/ps)+'</td><td>'+Math.round(s.c/ps)+'</td></tr>';
-  h+='<tr><td>на всё блюдо</td><td>'+Math.round(s.k)+'</td><td>'+Math.round(s.p)+'</td><td>'+Math.round(s.f)+'</td><td>'+Math.round(s.c)+'</td></tr>';
-  h+='</table>';
- }
- h+='<div class="nutnote">Примерный расчёт: по сырым ингредиентам с учётом уварки/выпаривания — готовый вес блюда ≈ '+y+' г. Значения средние, они не заменяют точный расчёт по вашей граммовке.</div></div>';
- return h;
-}
+
 function renderGrid(cat){
- const g=document.getElementById('grid');
- g.innerHTML=R.filter(r=>!cat||r.cat===cat).map(r=>{
-  const s=recipeNutr(r);
-  return '<div class="card" onclick="openR('+r.id+')">'+photoTag(r,'')+'<div class="cb"><h3>'+esc(r.t)+'</h3><div class="meta">'+esc(r.cat)+' · '+esc(r.time)+' · '+esc(partsLabel(r))+'</div><div class="nut">≈ '+Math.round(s.k/r.yield*100)+' ккал/100 г · '+r.serv+' порц.</div></div></div>';
- }).join('');
+  const g = document.getElementById('grid');
+  let h = '';
+  DATA.recipes.filter(r=>cat==='all'||r.cat===cat).forEach(r=>{
+    h += '<div class="card" data-act="open" data-id="'+r.id+'">'
+      + '<div class="ph" data-id="'+r.id+'"><span class="em">'+r.emoji+'</span>'
+      + '<img src="img/'+r.photo+'.jpg" alt="" data-id="'+r.id+'">'
+      + '<span class="badge">'+esc(r.cat)+'</span></div>'
+      + '<div class="cbody"><h3>'+esc(r.name)+'</h3>'
+      + '<div class="cmeta"><span>⏱ '+esc(r.time)+'</span><span>'+partsLabel(r)+'</span></div>'
+      + '<div class="ckbju">≈ '+r.per100.k+' ккал / 100 г</div>'
+      + '<button class="mopen" data-act="open" data-id="'+r.id+'">Открыть полностью</button>'
+      + '</div></div>';
+  });
+  g.innerHTML = h;
+  g.querySelectorAll('img').forEach(img=>{
+    img.onerror = ()=>{ img.closest('.ph').classList.add('noimg'); img.closest('.mphoto')&&img.closest('.mphoto').classList.add('noimg'); };
+  });
 }
-const CATS=['Все рецепты',...new Set(R.map(r=>r.cat))];
-function renderCats(){
- document.getElementById('cats').innerHTML=CATS.map((c,i)=>'<button data-c="'+esc(c)+'" onclick="pickCat(this)">'+esc(c)+'</button>').join('');
- document.querySelector('#cats button').classList.add('on');
+
+function fmtNum(x){
+  if(Math.abs(x-Math.round(x))<1e-9) return String(Math.round(x));
+  const map={0.25:'¼',0.5:'½',0.75:'¾'};
+  const r1=Math.round(x*4)/4;
+  if(Math.abs(r1-Math.round(r1))>1e-9 && map[String(r1)]) return map[String(r1)];
+  const whole=Math.floor(r1), frac=r1-whole;
+  if(frac>0 && map[frac.toFixed(2)]) return (whole? whole+'':'')+map[frac.toFixed(2)];
+  return String(r1).replace('.',',');
 }
-function pickCat(btn){
- document.querySelectorAll('#cats button').forEach(b=>b.classList.remove('on'));
- btn.classList.add('on');
- renderGrid(btn.dataset.c==='Все рецепты'?null:btn.dataset.c);
+
+function smartRound(x){
+  if(x<=2) return Math.round(x*4)/4;
+  if(x<=12) return Math.round(x*2)/2;
+  if(x<=60) return Math.round(x);
+  if(x<=200) return Math.round(x/5)*5;
+  return Math.round(x/10)*10;
 }
-function getK(id){return PS[id]?PS[id].k:1}
-function openR(id){cur=R.find(r=>r.id===id);if(!PS[id])PS[id]={k:1};document.getElementById('ov').classList.add('open');renderModal()}
-function closeM(){document.getElementById('ov').classList.remove('open')}
-function setK(id,k){PS[id]={k};renderModal()}
-function setCustom(id,v){const n=parseFloat(v.replace(',','.'));if(n>0){PS[id]={k:n};renderModal('c')}}
-function setGrams(id,v){const n=parseFloat(v.replace(',','.'));if(n>0){PS[id]={k:n/R.find(r=>r.id===id).yield};renderModal('g')}}
-function activeBtn(k){const pr=[0.5,1,2,3,4];return pr.includes(+k.toFixed(3))?k:null}
-function renderModal(f){
- const r=cur,k=getK(r.id),act=activeBtn(k);
- const s=recipeNutr(r);
- let h='<div onclick="closeM()" style="float:right;cursor:pointer;font-size:22px">✕</div>';
- h+=photoTag(r,'mphoto');
- h+='<h2>'+esc(r.t)+'</h2><div class="pmeta">'+esc(r.cat)+' · '+esc(r.time)+' · '+esc(partsLabel(r))+' · базовая порция: '+r.serv+'</div>';
- h+=nutrHTML(r);
- h+='<div class="pctl"><span class="lbl">Порций:</span>';
- h+=[0.5,1,2,3,4].map(v=>'<button class="'+(act===v?'on':'')+'" onclick="setK('+r.id+','+v+')">'+(v===0.5?'½':v)+'</button>').join('');
- h+='<span class="lbl">или своё число:</span><input type="text" value="'+(act?fmtN(k):fmtN(+k.toFixed(2)))+'" oninput="setCustom('+r.id+',this.value)">';
- h+='<span class="lbl">или вес готового блюда, г:</span><input type="text" value="'+Math.round(r.yield*k/5)*5+'" oninput="setGrams('+r.id+',this.value)">';
- h+='<span class="lbl">итог: ×'+fmtN(+k.toFixed(2))+'</span></div>';
- for(const pt of r.parts){
-  h+='<div class="ph">'+esc(pt.n)+'</div>';
-  for(const[n,q,u]of pt.it){
-   const sq=scaleQty(q,k);
-   h+='<div class="pi">'+esc(n)+' — '+(sq==null?'по вкусу':sq+' '+esc(u))+'</div>';
+
+function qtyStr(it,k){
+  if(it.q===null||it.u===null) return '';
+  const f=(v)=>fmtNum(smartRound(v*k));
+  const a=f(it.q);
+  if(it.q2!==null){
+    const b=f(it.q2);
+    return a===b? a : a+'–'+b;
   }
-  if(pt.st)h+='<div class="pi" style="color:#8a7d6b;font-size:13px">'+esc(pt.st)+'</div>';
- }
- h+='<div class="ph">Способ приготовления</div><ol class="steps">'+r.steps.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ol>';
- h+='<div class="btnrow"><button class="btn" onclick="showPrint('+r.id+')">Распечатать рецепт</button><button class="btn sec" onclick="closeM()">Закрыть</button></div>';
- document.getElementById('modal').innerHTML=h;
-if(f==='c'||f==='g'){const el=document.getElementById(f==='c'?'inpC':'inpG');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length)}}
+  return a;
 }
-const P1=75,P0=190;
-function blocks(r,k){
- const bl=[];
- for(const pt of r.parts){
-  bl.push({t:'h',x:pt.n,h:9});
-  for(const[n,q,u]of pt.it){
-   const sq=scaleQty(q,k);
-   bl.push({t:'i',x:esc(n)+' — '+(sq==null?'по вкусу':sq+' '+esc(u)),h:6.3});
+
+function kbjuBlock(r,k){
+  const tot = Math.round(r.total*k);
+  return '<div class="kbju"><h4>Примерный КБЖУ</h4><table>'
+    + '<tr><th></th><th>ккал</th><th>Б, г</th><th>Ж, г</th><th>У, г</th></tr>'
+    + '<tr><td>на 100 г</td><td>'+r.per100.k+'</td><td>'+r.per100.p+'</td><td>'+r.per100.f+'</td><td>'+r.per100.c+'</td></tr>'
+    + '<tr><td>на порцию</td><td>'+r.perPortion+'</td><td>—</td><td>—</td><td>—</td></tr>'
+    + '<tr><td>на всё блюдо'+(k!==1?' (×'+fmtNum(k)+')':'')+'</td><td>'+tot+'</td><td>—</td><td>—</td><td>—</td></tr>'
+    + '</table><div class="note">Готовый вес блюда ≈ '+fmtNum(r.ready*k)+' г. Расчёт по сырым ингредиентам с учётом уварки/выпаривания (−'+Math.round(r.loss*100)+'%). Значения ориентировочные.</div></div>';
+}
+
+function ingredientsHtml(r,k){
+  return r.parts.map(p=>{
+    const head = p.title? '<h4>'+esc(p.title)+'</h4>':'';
+    const lis = p.items.map(it=>{
+      const q = qtyStr(it,k);
+      const name = (it.q===null||it.u===null)? esc(it.n) : esc(it.n);
+      return '<li>'+(q? '<span class="q">'+q+'</span> ':'')+name+'</li>';
+    }).join('');
+    return head+'<ul>'+lis+'</ul>';
+  }).join('');
+}
+
+function openRecipe(id){
+  cur = DATA.recipes.find(x=>x.id===Number(id)); curK = 1;
+  const r = cur;
+  document.getElementById('mbox').innerHTML =
+    '<button class="mclose" data-act="close">✕</button>'
+    + '<div class="mhead">'
+    + '<div class="mphoto" id="mphoto"><span class="em">'+r.emoji+'</span><img src="img/'+r.photo+'.jpg" alt=""></div>'
+    + '<div class="mtitle"><h2>'+esc(r.name)+'</h2>'
+    + '<div class="cmeta"><span>⏱ '+esc(r.time)+'</span><span>'+partsLabel(r)+'</span><span>базовых порций: '+r.portions+'</span></div>'
+    + '<div class="portions"><div class="lbl">Порции:</div>'
+    + '<button class="pbtn" data-act="k" data-k="0.5">½</button>'
+    + '<button class="pbtn on" data-act="k" data-k="1">1</button>'
+    + '<button class="pbtn" data-act="k" data-k="2">2</button>'
+    + '<button class="pbtn" data-act="k" data-k="3">3</button>'
+    + '<button class="pbtn" data-act="k" data-k="4">4</button>'
+    + '<input class="pinp" id="pCount" type="number" step="0.5" min="0.25" value="1" title="своё число порций">'
+    + '<input class="pinp" id="pGrams" type="number" step="10" min="0" value="'+r.ready+'" title="вес готового блюда, г">'
+    + '<div class="lbl" style="margin-top:4px">слева — своё число порций, справа — вес готового блюда, г</div>'
+    + '</div></div></div>'
+    + '<div class="igr" id="igr">'+ingredientsHtml(r,1)+'</div>'
+    + '<div class="steps">'+r.steps.map(s=>'<p>'+esc(s)+'</p>').join('')+'</div>'
+    + '<div id="kbjuBox">'+kbjuBlock(r,1)+'</div>'
+    + '<button class="printbtn" data-act="printr">🖨 Распечатать рецепт</button>';
+  document.getElementById('modal').classList.remove('hidden');
+  document.getElementById('mphoto').querySelector('img').onerror = function(){ this.closest('.mphoto').classList.add('noimg'); };
+  const pc = document.getElementById('pCount'), pg = document.getElementById('pGrams');
+  pc.addEventListener('input', ()=>{ const v=parseFloat(pc.value); if(v>0) setK(v); });
+  pg.addEventListener('input', ()=>{ const v=parseFloat(pg.value); if(v>0) setK(v/r.ready); });
+}
+
+function setK(k){
+  if(!cur) return;
+  curK = k;
+  document.getElementById('igr').innerHTML = ingredientsHtml(cur,k);
+  document.getElementById('kbjuBox').innerHTML = kbjuBlock(cur,k);
+  document.querySelectorAll('.pbtn').forEach(b=>{
+    b.classList.toggle('on', Math.abs(parseFloat(b.dataset.k)-k)<0.01);
+  });
+  const pc=document.getElementById('pCount'), pg=document.getElementById('pGrams');
+  if(document.activeElement!==pc) pc.value = (Math.round(k*100)/100);
+  if(document.activeElement!==pg) pg.value = Math.round(cur.ready*k);
+}
+
+function sheetHoles(){
+  return HOLES.map(t=>'<div class="hole" style="top:'+t+'mm"></div>').join('');
+}
+
+function kbjuLine(r,k){
+  return 'КБЖУ на 100 г ≈ '+r.per100.k+' ккал (Б '+r.per100.p+' · Ж '+r.per100.f+' · У '+r.per100.c+') · на порцию ≈ '+r.perPortion+' ккал · примерный расчёт по сырым ингредиентам с учётом уварки';
+}
+
+function sheetHtml(r,k,page){
+  let h = '<div class="sheet">'+sheetHoles();
+  if(page===0){
+    h += '<h2>'+esc(r.name)+'</h2>'
+      + '<div class="smeta">⏱ '+esc(r.time)+' · '+partsLabel(r)+' · <b>🍴 '+fmtNum(k)+' порции</b></div>'
+      + '<div class="igr">'+ingredientsHtml(r,k)+'</div>';
+  } else {
+    h += '<div class="contnote">'+esc(r.name)+' — продолжение, стр. '+(page+1)+'</div>';
   }
-  if(pt.st)bl.push({t:'i',x:'<i>'+esc(pt.st)+'</i>',h:6.3});
- }
- bl.push({t:'h',x:'Способ приготовления',h:9});
- r.steps.forEach((x,i)=>bl.push({t:'i',x:(i+1)+'. '+esc(x),h:7}));
- if(r.perPart){
-  bl.push({t:'h',x:'КБЖУ начинок (на 100 г, примерно)',h:9});
-  for(const pt of r.parts.slice(1)){
-   const d=partNutr(pt.it);
-   bl.push({t:'i',x:esc(pt.n)+': '+Math.round(d.k/d.w*100)+' ккал · Б '+Math.round(d.p/d.w*100)+' · Ж '+Math.round(d.f/d.w*100)+' · У '+Math.round(d.c/d.w*100),h:6.3});
-  }
- }
- return bl;
+  h += '<div class="steps">'+r.steps.map(s=>'<p>'+esc(s)+'</p>').join('')+'</div>';
+  h += '<div class="kbjuline">'+kbjuLine(r,k)+'</div></div>';
+  return h;
 }
-function paginate(r,k){
- const s=recipeNutr(r);
- const nutrMm=r.perPart?r.parts.length*7+20:34;
- const bl=blocks(r,k);
- const pages=[];let b=P1-nutrMm;let pg=[];
- for(const x of bl){if(x.h>b){pages.push(pg);pg=[];b=P0;}pg.push(x);b-=x.h}
- pages.push(pg);
- return pages;
+
+function paginate(){
+  const area = document.getElementById('printArea');
+  Array.from(area.querySelectorAll('.sheet')).forEach(sh=>{
+    let guard = 0;
+    while(sh.scrollHeight > sh.clientHeight + 2 && guard < 40){
+      guard++;
+      const box = sh.querySelector('.steps');
+      if(!box || !box.lastElementChild) break;
+      const name = sh.dataset.name || '';
+      const cont = document.createElement('div');
+      cont.className = 'sheet';
+      cont.innerHTML = sheetHoles()
+        + '<div class="contnote">' + esc(name) + ' — продолжение</div>'
+        + '<div class="steps"></div>';
+      sh.after(cont);
+      while(box.lastElementChild && (sh.scrollHeight > sh.clientHeight + 2)){
+        cont.querySelector('.steps').insertBefore(box.lastElementChild, cont.querySelector('.steps').firstChild);
+      }
+      if(!box.lastElementChild) break;
+      sh = cont;
+    }
+  });
 }
-function pageHTML(pg,first,cont,r){
- let h='<div class="sheet sh"><div class="phh" style="font-size:11px">'+(cont?esc(r.t)+' · — продолжение —':esc(r.cat))+'</div>';
- if(first){
-  h+='<h3>'+esc(r.t)+'</h3><div class="sm">'+esc(r.time)+' · порций: '+Math.round(r.serv*getK(r.id)*10)/10+'</div>';
-  h+='<div style="height:48mm;overflow:hidden;margin:3mm 0">'+photoTagH(r)+'</div>';
-  const s=recipeNutr(r);
-  if(r.perPart){
-   h+='<table class="n"><tr><th>Начинка</th><th>ккал/100 г</th></tr>';
-   for(const pt of r.parts.slice(1)){const d=partNutr(pt.it);h+='<tr><td>'+esc(pt.n)+'</td><td>'+Math.round(d.k/d.w*100)+'</td></tr>'}
-   h+='</table><div class="nn">Примерный КБЖУ по сырому весу с учётом уварки. Готовый вес ≈ '+r.yield+' г.</div>';
-  }else{
-   h+='<table class="n"><tr><th></th><th>ккал</th><th>Б</th><th>Ж</th><th>У</th></tr>';
-   h+='<tr><td>на 100 г готового</td><td>'+Math.round(s.k/r.yield*100)+'</td><td>'+Math.round(s.p/r.yield*100)+'</td><td>'+Math.round(s.f/r.yield*100)+'</td><td>'+Math.round(s.c/r.yield*100)+'</td></tr>';
-   h+='<tr><td>на порцию</td><td>'+Math.round(s.k/r.serv)+'</td><td>'+Math.round(s.p/r.serv)+'</td><td>'+Math.round(s.f/r.serv)+'</td><td>'+Math.round(s.c/r.serv)+'</td></tr>';
-   h+='</table><div class="nn">Примерный расчёт по сырому весу с учётом уварки.</div>';
-  }
- }
- for(const x of pg){
-  h+=x.t==='h'?'<div class="phh">'+x.x+'</div>':'<div class="itm">'+x.x+'</div>';
- }
- h+='<div class="cont">'+r.id+'</div>';
- for(const y of HOLES){h+='<div class="hole" style="top:'+y+'mm"></div>'}
- h+='</div>';
- return h;
+
+function printRecipe(id){
+  const r = DATA.recipes.find(x=>x.id===Number(id));
+  const area = document.getElementById('printArea');
+  area.innerHTML = sheetHtml(r,curK,0);
+  const sh = area.querySelector('.sheet');
+  sh.dataset.name = r.name; sh.dataset.k = curK;
+  paginate();
+  paginate();
+  window.print();
 }
-function showPrint(id){
- const r=R.find(x=>x.id===id),k=getK(id);
- const pages=paginate(r,k);
- let h='<div class="btnrow"><button class="btn" onclick="window.print()">Печать</button><button class="btn sec" onclick="closeP()">Закрыть</button></div><div class="sheetwrap">';
- pages.forEach((pg,i)=>{h+='<div>'+pageHTML(pg,i===0,i>0,r)+'</div>'});
- h+='</div>';
- openPrev(h);
-}
+
 function printBook(){
- let h='<div class="btnrow"><button class="btn" onclick="window.print()">Печать книги</button><button class="btn sec" onclick="closeP()">Закрыть</button></div><div class="sheetwrap">';
- for(const r of R){
-  const pages=paginate(r,1);
-  pages.forEach((pg,i)=>{h+='<div>'+pageHTML(pg,i===0,i>0,r)+'</div>'});
-  if(pages.length%2===1)h+='<div class="sheet"></div>';
- }
- h+='</div>';
- openPrev(h);
+  const area = document.getElementById('printArea');
+  let h = '<div class="sheet cover">'+sheetHoles()
+    + '<div class="decor">📖</div><div class="big">Кулинарная книга</div>'
+    + '<div class="small">Домашние рецепты</div></div>';
+  DATA.recipes.forEach(r=>{
+    h += sheetHtml(r,1,0);
+  });
+  area.innerHTML = h;
+  area.querySelectorAll('.sheet').forEach((sh,idx)=>{
+    if(idx===0) return;
+    const r = DATA.recipes[idx-1];
+    sh.dataset.name = r.name; sh.dataset.k = 1;
+  });
+  paginate();
+  window.print();
 }
-function openPrev(inner){
- document.getElementById('prevInner').innerHTML=inner+'<div class="btnrow"><button class="btn" onclick="window.print()">Печать</button><button class="btn sec" onclick="closeP()">Закрыть</button></div>';
- document.getElementById('prev').classList.add('open');
- window.scrollTo(0,0);
-}
-function closeP(){document.getElementById('prev').classList.remove('open')}
-renderCats();renderGrid();
+
+document.addEventListener('click', e=>{
+  const b = e.target.closest('[data-act]');
+  if(!b) return;
+  const act = b.dataset.act;
+  if(act==='filter'){
+    document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on', c===b));
+    renderGrid(b.dataset.cat);
+  } else if(act==='open'){
+    openRecipe(b.dataset.id);
+  } else if(act==='close'){
+    document.getElementById('modal').classList.add('hidden');
+  } else if(act==='k'){
+    setK(parseFloat(b.dataset.k));
+  } else if(act==='printbook'){
+    printBook();
+  } else if(act==='printr'){
+    printRecipe(b.dataset.id);
+  }
+});
+
+renderChips();
+renderGrid('all');
 </script>
 </body>
 </html>
