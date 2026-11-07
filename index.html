@@ -936,6 +936,80 @@ function printRecipe(){
   function openPrintMenu() {
   document.getElementById('printMenu').showModal();
 }
+  
+function printArtworkPages(imagePaths) {
+  const old = document.getElementById('printFrame');
+  if (old) old.remove();
+
+  const frame = document.createElement('iframe');
+  frame.id = 'printFrame';
+  frame.style.cssText =
+    'position:fixed;left:-10000px;top:0;' +
+    'width:148mm;height:210mm;border:0;';
+
+  document.body.appendChild(frame);
+
+  const doc = frame.contentDocument;
+  doc.open();
+  doc.write(
+    '<!doctype html><html lang="ru"><head>' +
+    '<meta charset="UTF-8">' +
+    '<base href="' + document.baseURI + '">' +
+    '<title>Печать оформления — А5</title>' +
+    '<style>' + PRINT_CSS + '</style>' +
+    '</head><body></body></html>'
+  );
+  doc.close();
+
+ imagePaths.forEach(function(path, index) {
+  if (path) {
+    artworkPage(doc, path, index % 2 === 1);
+  } else {
+    addBlankPage(doc, 'пустой оборот обложки');
+  }
+});
+
+  const images = Array.from(doc.images);
+
+  Promise.race([
+    Promise.all(images.map(function(img) {
+      if (img.complete) return Promise.resolve();
+
+      return new Promise(function(resolve) {
+        img.addEventListener('load', resolve, {once:true});
+        img.addEventListener('error', resolve, {once:true});
+      });
+    })),
+    new Promise(resolve => setTimeout(resolve, 10000))
+  ]).then(function() {
+    frame.contentWindow.focus();
+    frame.contentWindow.print();
+  });
+}
+
+function printBookCover() {
+  document.getElementById('printMenu').close();
+
+  // Лицевая сторона обложки и пустой оборот.
+  printArtworkPages([
+    bookArtwork.cover,
+    null
+  ]);
+}
+
+function printCategoryDivider() {
+  const category =
+    document.getElementById('printCategory').value;
+
+  document.getElementById('printMenu').close();
+
+  // Лицевая сторона и универсальный оборот.
+  printArtworkPages([
+    bookArtwork.dividers[category],
+    'images/divider-back.png'
+  ]);
+}
+
 function printBook(){printList(recipes,1,true)}
 
 /* ---------- события ---------- */
