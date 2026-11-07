@@ -240,7 +240,7 @@ dialog{width:min(1400px,calc(100% - 28px));max-height:94dvh}
 <main>
   <div class="tools">
     <input id="search" type="search" placeholder="🔍 Найти рецепт или ингредиент…" aria-label="Поиск рецептов">
-    <button class="btn-print" onclick="printBook()">🖨 Распечатать книгу</button>
+   <button class="btn-print" onclick="openPrintMenu()">🖨 Оформление для печати</button>
   </div>
   <nav class="filters" id="filters" aria-label="Категории"></nav>
   <div class="count"><span id="countText"></span></div>
@@ -248,6 +248,54 @@ dialog{width:min(1400px,calc(100% - 28px));max-height:94dvh}
 </main>
 
 <dialog id="dialog"><div class="detail" id="detail"></div></dialog>
+  
+<!-- Меню печати оформления книги -->
+<dialog id="printMenu">
+  <div class="detail" style="max-width:620px;padding:30px">
+    <div class="detail-top">
+      <h2 style="font-size:30px;margin:0">
+        Оформление книги
+      </h2>
+      <button class="close"
+        onclick="document.getElementById('printMenu').close()"
+        aria-label="Закрыть">×</button>
+    </div>
+
+    <p style="color:#6f655a;line-height:1.6">
+      Выберите, что хотите распечатать.
+      Все страницы подготовлены в формате А5.
+    </p>
+
+    <div style="display:grid;gap:14px;margin-top:24px">
+      <button class="btn-print" onclick="printBookCover()">
+        Обложка книги
+      </button>
+
+      <label for="printCategory"
+        style="font-size:17px;color:#55664f">
+        Разделитель категории
+      </label>
+
+      <select id="printCategory"
+        style="padding:13px;border:1px solid #ded8ca;
+        border-radius:10px;background:#fffdf8;
+        font:17px Georgia,serif;color:#332b24">
+        <option value="Завтраки">Завтраки</option>
+        <option value="Салаты">Салаты</option>
+        <option value="Закуски">Закуски</option>
+        <option value="Горячее">Горячее</option>
+        <option value="Выпечка">Выпечка</option>
+        <option value="Десерты">Десерты</option>
+        <option value="Кремы и начинки">Кремы и начинки</option>
+      </select>
+
+      <button class="btn-print" onclick="printCategoryDivider()">
+        Распечатать разделитель
+      </button>
+    </div>
+  </div>
+</dialog>
+
 
 <div id="printView">
   <div class="printbar">
@@ -884,6 +932,9 @@ function printRecipe(){
   var r=recipes.find(function(x){return x.id===currentId});
   if(!r) return;
   printList([r],currentPortion);
+}
+  function openPrintMenu() {
+  document.getElementById('printMenu').showModal();
 }
 function printBook(){printList(recipes,1,true)}
 
