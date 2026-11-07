@@ -559,10 +559,10 @@ const PRINT_CSS = [
 '.illustration-top{font:8pt Arial,sans-serif;letter-spacing:.18em;color:#73856e;text-transform:uppercase;margin-bottom:5mm}',
 '.illustration-bottom{font:italic 13pt Georgia,serif;color:#55664f;margin-top:5mm}',
 '.illustration-ornament{font:60pt Georgia,serif;color:#73856e}',
-'.artwork-sheet{position:relative;width:148mm;height:210mm;overflow:hidden;background:#fdf8ee}',
-'.artwork-sheet .artwork-inner{position:absolute;top:9mm;right:9mm;bottom:9mm;left:20mm}',
+'.sheet.artwork-sheet{position:relative;width:148mm;height:210mm;padding:0!important;overflow:hidden;background:#fdf8ee}',
+'.sheet.artwork-sheet .artwork-inner{position:absolute;inset:0!important}',
 '.artwork-sheet.reverse .artwork-inner{left:9mm;right:20mm}',
-'.artwork-sheet img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}'
+'.sheet.artwork-sheet img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}',
 ].join('');
 
 var MM=96/25.4;
@@ -712,7 +712,7 @@ const dividerArt={
 function addDividerBack(doc, cat) {
   const page = artworkPage(
     doc,
-    bookArtwork.dividers[cat],
+    'images/divider-back.png',
     true
   );
 
