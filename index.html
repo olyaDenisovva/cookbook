@@ -777,11 +777,7 @@ function printRecipe(){
   if(!r) return;
   printList([r],currentPortion);
 }
-function printBook(){
-  alert('Начинаю подготовку книги');
-  printList(recipes,1,true);
-  alert('Подготовка страниц завершена');
-}
+function printBook(){printList(recipes,1,true)}
 
 /* ---------- события ---------- */
 renderFilters(); renderGrid();
