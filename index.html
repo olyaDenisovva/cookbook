@@ -942,6 +942,29 @@ function printRecipe(){
   function openPrintMenu() {
   document.getElementById('printMenu').showModal();
 }
+
+document.getElementById('selectAllDividers').addEventListener('change', function() {
+  const checked = this.checked;
+
+  document.querySelectorAll(
+    '#printCategories input[type="checkbox"]:not(#selectAllDividers)'
+  ).forEach(function(input) {
+    input.checked = checked;
+  });
+});
+
+document.getElementById('printCategories').addEventListener('change', function(event) {
+  if (event.target.id === 'selectAllDividers') return;
+
+  const categories = Array.from(
+    document.querySelectorAll(
+      '#printCategories input[type="checkbox"]:not(#selectAllDividers)'
+    )
+  );
+
+  document.getElementById('selectAllDividers').checked =
+    categories.every(input => input.checked);
+});
   
 function printArtworkPages(imagePaths) {
   const old = document.getElementById('printFrame');
