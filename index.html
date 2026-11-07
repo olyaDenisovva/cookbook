@@ -723,55 +723,163 @@ function addDividerBack(doc, cat) {
 
   return page;
 }
-function printList(list,portion,withDividers){
-  var old=document.getElementById('printFrame');if(old)old.remove();
-  var frame=document.createElement('iframe');frame.id='printFrame';
-  frame.style.cssText='position:fixed;left:-10000px;top:0;width:148mm;height:210mm;border:0;opacity:0;pointer-events:none;';
-  document.body.appendChild(frame);
-  var doc=frame.contentDocument||frame.contentWindow.document;
-  doc.open();
 
-doc.write(
-  '<!doctype html><html lang="ru"><head>' +
-  '<meta charset="UTF-8">' +
-  '<title>Моя кулинарная книга — А5</title>' +
-  '<style>' + PRINT_CSS + '</style>' +
-  '</head><body></body></html>'
-);
+async function printList(list, portion, withDividers) {
+  if (window.__bookPrinting) return;
+  window.__bookPrinting = true;
 
-doc.close();
-  try{
-    var ordered=withDividers?list.slice().sort(function(a,b){return categoryOrder().indexOf(assignments[a.id])-categoryOrder().indexOf(assignments[b.id])||a.id-b.id;}):list;
-    if(withDividers){
-      addCoverPage(doc);
-      addBlankPage(doc,'оборот обложки');
-      var groups=[];
-      ordered.forEach(function(r){
-        var cat=assignments[r.id];
-        if(!groups.length||groups[groups.length-1].cat!==cat)groups.push({cat:cat,recipes:[]});
-        groups[groups.length-1].recipes.push(r);
-      });
-      groups.forEach(function(group){
-        ensureNextFront(doc);
-        var front=addDividerPage(doc,group.cat);
-        front.setAttribute('data-print-role','лицо разделителя: '+group.cat);
-        addDividerBack(doc,group.cat);
-        group.recipes.forEach(function(r){
-          var pages=paginateRecipe(doc,r,portion);
-          pages.forEach(function(p,i){p.setAttribute('data-print-role','рецепт: '+r.title+' ('+(i+1)+'/'+pages.length+')');});
-        });
-        ensureNextFront(doc);
-      });
-    }else{
-      ordered.forEach(function(r){paginateRecipe(doc,r,portion);});
+  const button = document.querySelector(
+    'button[onclick="printBook()"]'
+  );
+  const oldText = button ? button.textContent : '';
+
+  function progress(done, total) {
+    if (button && withDividers) {
+      button.textContent =
+        'Подготовка книги: ' + done + ' / ' + total;
+      button.disabled = true;
     }
-  }catch(e){alert('Не удалось подготовить страницы для печати: '+e.message);return;}
-  window.__lastPrintPlan=Array.from(doc.querySelectorAll('body > .sheet')).map(function(el,i){return {page:i+1,side:i%2===0?'лицо':'оборот',role:el.getAttribute('data-print-role')||'рецепт'};});
-  Promise.all(Array.from(doc.images).map(function(img){
-    if(img.complete)return Promise.resolve();
-    return new Promise(function(resolve){img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true});});
-  })).then(function(){setTimeout(function(){try{frame.contentWindow.focus();frame.contentWindow.print();}catch(e){alert('Печать не открылась: '+e.message);}},350);});
+  }
+
+  // Даём браузеру время обновить интерфейс.
+  function pause() {
+    return new Promise(resolve => setTimeout(resolve, 30));
+  }
+
+  let frame;
+
+  try {
+    const old = document.getElementById('printFrame');
+    if (old) old.remove();
+
+    frame = document.createElement('iframe');
+    frame.id = 'printFrame';
+    frame.style.cssText =
+      'position:fixed;left:-10000px;top:0;' +
+      'width:148mm;height:210mm;border:0;' +
+      'opacity:0;pointer-events:none;';
+
+    document.body.appendChild(frame);
+
+    const doc = frame.contentDocument ||
+                frame.contentWindow.document;
+
+    doc.open();
+    doc.write(
+      '<!doctype html><html lang="ru"><head>' +
+      '<meta charset="UTF-8">' +
+      '<title>Моя кулинарная книга — А5</title>' +
+      '<style>' + PRINT_CSS + '</style>' +
+      '</head><body></body></html>'
+    );
+    doc.close();
+
+    const order = categoryOrder();
+
+    const ordered = withDividers
+      ? list.slice().sort((a, b) =>
+          order.indexOf(assignments[a.id]) -
+          order.indexOf(assignments[b.id]) ||
+          a.id - b.id
+        )
+      : list;
+
+    progress(0, ordered.length);
+    await pause();
+
+    if (withDividers) {
+      addCoverPage(doc);
+      addBlankPage(doc, 'оборот обложки');
+    }
+
+    let previousCategory = null;
+
+    for (let i = 0; i < ordered.length; i++) {
+      const recipe = ordered[i];
+      const category = assignments[recipe.id];
+
+      // Разделитель добавляется перед первой
+      // страницей каждой новой категории.
+      if (withDividers && category !== previousCategory) {
+        ensureNextFront(doc);
+
+        addDividerPage(doc, category);
+        addDividerBack(doc, category);
+
+        previousCategory = category;
+      }
+
+      // Сохраняем существующую пагинацию А5.
+      const pages = paginateRecipe(doc, recipe, portion);
+
+      pages.forEach((page, index) => {
+        page.setAttribute(
+          'data-print-role',
+          'рецепт: ' + recipe.title +
+          ' (' + (index + 1) + '/' + pages.length + ')'
+        );
+      });
+
+      progress(i + 1, ordered.length);
+
+      // Важная часть: браузер получает паузу
+      // после каждого рецепта.
+      await pause();
+    }
+
+    if (withDividers) {
+      ensureNextFront(doc);
+    }
+
+    window.__lastPrintPlan = Array.from(
+      doc.querySelectorAll('body > .sheet')
+    ).map((page, index) => ({
+      page: index + 1,
+      side: index % 2 === 0 ? 'лицо' : 'оборот',
+      role: page.getAttribute('data-print-role') || 'рецепт'
+    }));
+
+    if (button && withDividers) {
+      button.textContent = 'Загрузка иллюстраций…';
+    }
+
+    // Не ждём изображения бесконечно.
+    const imagePromises = Array.from(doc.images).map(img => {
+      if (img.complete) return Promise.resolve();
+
+      return new Promise(resolve => {
+        img.addEventListener('load', resolve, {once: true});
+        img.addEventListener('error', resolve, {once: true});
+      });
+    });
+
+    await Promise.race([
+      Promise.all(imagePromises),
+      new Promise(resolve => setTimeout(resolve, 10000))
+    ]);
+
+    if (button && withDividers) {
+      button.textContent = 'Открываем печать…';
+    }
+
+    await pause();
+
+    frame.contentWindow.focus();
+    frame.contentWindow.print();
+
+  } catch (error) {
+    console.error('Ошибка печати книги:', error);
+    alert('Не удалось подготовить книгу: ' + error.message);
+
+  } finally {
+    if (button) {
+      button.textContent = oldText;
+      button.disabled = false;
+    }
+    window.__bookPrinting = false;
+  }
 }
+
 function printRecipe(){
   var r=recipes.find(function(x){return x.id===currentId});
   if(!r) return;
