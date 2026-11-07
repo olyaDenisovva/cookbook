@@ -430,6 +430,11 @@ function renderDetail(){
   '<h3>Ингредиенты</h3><ul>'+ings+'</ul></div><div class="detail-column"><h3>Приготовление</h3>'+
   '<button class="step-toggle" id="stepToggle" aria-pressed="'+stepMode+'">'+(stepMode?'Показать все шаги':'Пошаговый режим')+'</button>'+
   (stepMode?'<section class="step-mode" aria-live="polite"><div class="step-counter">Шаг '+(stepIndex+1)+' из '+r.steps.length+'</div><div class="step-text">'+esc(r.steps[stepIndex])+'</div><div class="step-nav"><button data-step="prev" '+(stepIndex===0?'disabled':'')+'>← Назад</button><button data-step="next" '+(stepIndex===r.steps.length-1?'disabled':'')+'>Далее →</button></div></section>':'<ol>'+steps+'</ol>')+
+    (r.important
+  ? '<div class="important-box"><strong>ВАЖНО</strong><p>' +
+    esc(r.important) +
+    '</p></div>'
+  : '') +
   (r.notes?'<section class="recipe-notes"><h3>Заметки</h3><p>'+esc(r.notes)+'</p></section>':'')+
   '<div class="btns"><button class="btn-full" onclick="openPrint()">📖 Открыть полностью</button><button class="btn-print" onclick="printRecipe()">🖨 Распечатать</button></div></div></div>';
 }
