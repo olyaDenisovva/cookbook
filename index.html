@@ -558,7 +558,11 @@ const PRINT_CSS = [
 '.illustration-frame img{width:100%;height:145mm;object-fit:contain;display:block;filter:saturate(.88)}',
 '.illustration-top{font:8pt Arial,sans-serif;letter-spacing:.18em;color:#73856e;text-transform:uppercase;margin-bottom:5mm}',
 '.illustration-bottom{font:italic 13pt Georgia,serif;color:#55664f;margin-top:5mm}',
-'.illustration-ornament{font:60pt Georgia,serif;color:#73856e}'
+'.illustration-ornament{font:60pt Georgia,serif;color:#73856e}',
+'.artwork-sheet{position:relative;width:148mm;height:210mm;overflow:hidden;background:#fdf8ee}',
+'.artwork-sheet .artwork-inner{position:absolute;top:9mm;right:9mm;bottom:9mm;left:20mm}',
+'.artwork-sheet.reverse .artwork-inner{left:9mm;right:20mm}',
+'.artwork-sheet img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}'
 ].join('');
 
 var MM=96/25.4;
@@ -669,16 +673,21 @@ function addIllustratedDivider(doc, category) {
   // Оборот того же листа
   artworkPage(doc, imagePath, true);
 }
-function addDividerPage(doc,cat){
-  var el=doc.createElement('div');el.className='sheet divider-sheet';
-  el.innerHTML=dividerHTML(cat);doc.body.appendChild(el);return el;
+function addDividerPage(doc, cat) {
+  const page = artworkPage(
+    doc,
+    bookArtwork.dividers[cat],
+    false
+  );
+
+  page.setAttribute(
+    'data-print-role',
+    'лицо разделителя: ' + cat
+  );
+
+  return page;
 }
 
-function addCoverPage(doc){
- var el=doc.createElement('div');el.className='sheet';
- el.innerHTML=holesHTML()+'<div class="cover-frame"><div class="divider-kicker">Личная коллекция</div><div class="cover-ornament">❦</div><div class="cover-title">Моя кулинарная книга</div><div class="cover-sub">Любимые блюда, проверенные рецепты и немного вдохновения</div><div class="divider-footer">Семейный архив рецептов</div></div>';
- doc.body.appendChild(el);return el;
-}
 /* Одна физическая страница А5. Нечётные номера — лицевая сторона листа. */
 function addBlankPage(doc,reason){
   var el=doc.createElement('div');el.className='sheet blank-sheet';
@@ -700,15 +709,19 @@ const dividerArt={
   'Кремы и начинки':'images/cremcheese.jpg',
   'Салаты':'images/bliny.jpg'
 };
-function addDividerBack(doc,cat){
-  var el=doc.createElement('div');el.className='sheet divider-back-sheet';
-  el.setAttribute('data-print-role','оборот разделителя: '+cat);
-  var image=dividerArt[cat]||'';
-  el.innerHTML=holesHTML()+'<div class="illustration-frame">'+
-    '<div class="illustration-top">❦ &nbsp; Моя кулинарная книга &nbsp; ❦</div>'+
-    (image?'<img src="'+esc(image)+'" alt="Акварельная иллюстрация: '+esc(cat)+'">':'<div class="illustration-ornament">❦</div>')+
-    '<div class="illustration-bottom">'+esc(cat)+'</div></div>';
-  doc.body.appendChild(el);return el;
+function addDividerBack(doc, cat) {
+  const page = artworkPage(
+    doc,
+    bookArtwork.dividers[cat],
+    true
+  );
+
+  page.setAttribute(
+    'data-print-role',
+    'оборот разделителя: ' + cat
+  );
+
+  return page;
 }
 function printList(list,portion,withDividers){
   var old=document.getElementById('printFrame');if(old)old.remove();
@@ -716,37 +729,17 @@ function printList(list,portion,withDividers){
   frame.style.cssText='position:fixed;left:-10000px;top:0;width:148mm;height:210mm;border:0;opacity:0;pointer-events:none;';
   document.body.appendChild(frame);
   var doc=frame.contentDocument||frame.contentWindow.document;
-  doc.open();doc.write('<!doctype html><html lang="ru"><head><meta charset="UTF-8"><title>Моя кулинарная книга — А5</title><style>'+PRINT_CSS+'
- /* Акварельные страницы печатной книги */
-.artwork-sheet {
-  width: 148mm;
-  height: 210mm;
-  position: relative;
-  overflow: hidden;
-  background: #fdf8ee;
-}
+  doc.open();
 
-.artwork-sheet img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-}
+doc.write(
+  '<!doctype html><html lang="ru"><head>' +
+  '<meta charset="UTF-8">' +
+  '<title>Моя кулинарная книга — А5</title>' +
+  '<style>' + PRINT_CSS + '</style>' +
+  '</head><body></body></html>'
+);
 
-.artwork-sheet .artwork-inner {
-  position: absolute;
-  top: 9mm;
-  right: 9mm;
-  bottom: 9mm;
-  left: 20mm;
-}
-
-.artwork-sheet.reverse .artwork-inner {
-  left: 9mm;
-  right: 20mm;
-}                      
-</style></head><body></body></html>');doc.close();
+doc.close();
   try{
     var ordered=withDividers?list.slice().sort(function(a,b){return categoryOrder().indexOf(assignments[a.id])-categoryOrder().indexOf(assignments[b.id])||a.id-b.id;}):list;
     if(withDividers){
