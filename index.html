@@ -215,16 +215,11 @@ dialog{width:min(1400px,calc(100% - 28px));max-height:94dvh}
 @media(max-width:760px){.detail-layout{grid-template-columns:1fr;gap:14px}.detail-photo{height:290px}.detail{padding:24px 20px}.detail h2{font-size:34px}}
 @media(max-width:560px){.grid{grid-template-columns:1fr}.card-photo{height:275px}.recipe{min-height:0}.detail-photo{height:250px}}
 /* Обложка, оглавление, разделители А5 */
-.cover-frame,.toc-frame{height:192mm;border:1.5px solid #c9b896;position:relative;padding:12mm 8mm;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse,#fffdf5,#eee8d8)}
-.cover-frame:before,.toc-frame:before{content:'';position:absolute;inset:4mm;border:1px solid #dfd6c1;pointer-events:none}
+.cover-frame{height:192mm;border:1.5px solid #c9b896;position:relative;padding:12mm 8mm;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse,#fffdf5,#eee8d8)}
+.cover-frame:before{content:'';position:absolute;inset:4mm;border:1px solid #dfd6c1;pointer-events:none}
 .cover-ornament{font:40pt Georgia,serif;color:#a3814e;margin:8mm 0}
 .cover-title{font:700 31pt/1.2 Georgia,serif;color:#4b5f45;max-width:90mm}
 .cover-sub{font:italic 12pt Georgia,serif;color:#82725d;margin-top:10mm}
-.toc-frame{justify-content:flex-start;align-items:stretch;text-align:left;padding:14mm 10mm}
-.toc-title{text-align:center;font:700 24pt Georgia,serif;color:#4b5f45;margin:3mm 0 8mm}
-.toc-row{display:flex;align-items:baseline;gap:2mm;font:9pt/1.25 Georgia,serif;padding:1.2mm 0;border-bottom:1px dotted #d8cdb8}
-.toc-row .toc-name{flex:1}.toc-row .toc-page{font:700 9pt Arial,sans-serif;color:#73856e}
-.toc-category{font:700 10pt Georgia,serif;color:#4b5f45;margin:3mm 0 1mm}
 .divider-frame{background:radial-gradient(ellipse at center,#fdf9f0,#e9efdf)}
 .divider-frame:after{content:'❦';position:absolute;bottom:24mm;color:#b7c3ab;font:28pt Georgia,serif}
 
@@ -480,8 +475,10 @@ const PRINT_CSS = [
 'body{font-family:Georgia,"Times New Roman",serif;color:#3d3120;background:#fff;',
 '-webkit-print-color-adjust:exact;print-color-adjust:exact}',
 '.sheet{position:relative;width:148mm;min-height:210mm;background:#fdf8ee;',
-'padding:9mm 9mm 9mm 20mm;page-break-after:always;overflow:hidden}',
+'height:210mm;min-height:210mm;padding:9mm 9mm 9mm 20mm;break-after:page;page-break-after:always;overflow:hidden}',
 '.sheet:last-child{page-break-after:auto}',
+'.sheet:nth-child(even){padding-left:9mm;padding-right:20mm}',
+'.sheet:nth-child(even) .hole{left:auto;right:9mm}',
 '.hole{position:absolute;left:9mm;width:6mm;height:6mm;border-radius:50%;',
 'border:1.4px solid #b9a983;background:#f2ead8}',
 '.frame{border:1.4px solid #c9b896;padding:7mm 7mm 6mm;position:relative}',
@@ -525,18 +522,20 @@ const PRINT_CSS = [
 '.divider-rule{width:35mm;border-top:1px solid #a3814e;margin:0 auto 7mm}',
 '.divider-sub{font:italic 12pt Georgia,serif;color:#82725d}',
 '.divider-footer{position:absolute;bottom:13mm;font:8pt Arial,sans-serif;letter-spacing:.23em;text-transform:uppercase;color:#a3814e}',
-'.cover-frame,.toc-frame{height:192mm;border:1.5px solid #c9b896;position:relative;padding:12mm 8mm;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f8f4e9}',
-'.cover-frame:before,.toc-frame:before{content:"";position:absolute;inset:4mm;border:1px solid #dfd6c1}',
+'.cover-frame{height:192mm;border:1.5px solid #c9b896;position:relative;padding:12mm 8mm;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f8f4e9}',
+'.cover-frame:before{content:"";position:absolute;inset:4mm;border:1px solid #dfd6c1}',
 '.cover-ornament{font:40pt Georgia,serif;color:#a3814e;margin:8mm 0}',
 '.cover-title{font:700 31pt/1.2 Georgia,serif;color:#4b5f45;max-width:90mm}',
 '.cover-sub{font:italic 12pt Georgia,serif;color:#82725d;margin-top:10mm}',
-'.toc-frame{justify-content:flex-start;align-items:stretch;text-align:left;padding:14mm 10mm}',
-'.toc-title{text-align:center;font:700 24pt Georgia,serif;color:#4b5f45;margin:3mm 0 8mm}',
-'.toc-row{display:flex;align-items:baseline;gap:2mm;font:9pt/1.25 Georgia,serif;padding:1.2mm 0;border-bottom:1px dotted #d8cdb8}',
-'.toc-row .toc-name{flex:1}.toc-row .toc-page{font:700 9pt Arial,sans-serif;color:#73856e}',
-'.toc-category{font:700 10pt Georgia,serif;color:#4b5f45;margin:3mm 0 1mm}',
 '.divider-frame{background:#eff2e8}',
-'.notes b{font-family:Georgia,serif;font-size:9pt;color:#4a3c2a;display:block;margin-bottom:1mm}'
+'.notes b{font-family:Georgia,serif;font-size:9pt;color:#4a3c2a;display:block;margin-bottom:1mm}',
+'.blank-frame{height:192mm}',
+'.illustration-frame{height:192mm;border:1.5px solid #c9b896;background:#f8f4e9;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8mm;position:relative}',
+'.illustration-frame:before{content:"";position:absolute;inset:4mm;border:1px solid #ded6bd;pointer-events:none}',
+'.illustration-frame img{width:100%;height:145mm;object-fit:contain;display:block;filter:saturate(.88)}',
+'.illustration-top{font:8pt Arial,sans-serif;letter-spacing:.18em;color:#73856e;text-transform:uppercase;margin-bottom:5mm}',
+'.illustration-bottom{font:italic 13pt Georgia,serif;color:#55664f;margin-top:5mm}',
+'.illustration-ornament{font:60pt Georgia,serif;color:#73856e}'
 ].join('');
 
 var MM=96/25.4;
@@ -621,56 +620,75 @@ function addCoverPage(doc){
  el.innerHTML=holesHTML()+'<div class="cover-frame"><div class="divider-kicker">Личная коллекция</div><div class="cover-ornament">❦</div><div class="cover-title">Моя кулинарная книга</div><div class="cover-sub">Любимые блюда, проверенные рецепты и немного вдохновения</div><div class="divider-footer">Семейный архив рецептов</div></div>';
  doc.body.appendChild(el);return el;
 }
-function addContentsPages(doc,entries){
- var chunks=[],chunk=[];
- entries.forEach(function(e){
-   if(chunk.length>=25){chunks.push(chunk);chunk=[];}chunk.push(e);
- });if(chunk.length)chunks.push(chunk);
- return chunks.map(function(items,i){
-   var el=doc.createElement('div');el.className='sheet';
-   el.innerHTML=holesHTML()+'<div class="toc-frame"><div class="toc-title">Оглавление'+(i?' — продолжение':'')+'</div>'+items.map(function(e){return e.cat?'<div class="toc-category">'+esc(e.cat)+'</div>':'<div class="toc-row"><span class="toc-name">'+esc(e.title)+'</span><span class="toc-page">'+e.page+'</span></div>'}).join('')+'</div>';
-   doc.body.appendChild(el);return el;
- });
+/* Одна физическая страница А5. Нечётные номера — лицевая сторона листа. */
+function addBlankPage(doc,reason){
+  var el=doc.createElement('div');el.className='sheet blank-sheet';
+  el.setAttribute('data-print-role',reason||'blank');
+  el.innerHTML=holesHTML()+'<div class="blank-frame"></div>';
+  doc.body.appendChild(el);return el;
+}
+function pageCount(doc){return doc.querySelectorAll('body > .sheet').length;}
+function ensureNextFront(doc){
+  /* Следующий лист начинается с нечётной страницы: 1, 3, 5... */
+  if(pageCount(doc)%2!==0)addBlankPage(doc,'выравнивание двусторонней печати');
+}
+const dividerArt={
+  'Завтраки':'images/bliny.jpg',
+  'Закуски':'images/pashtet.jpg',
+  'Горячее':'images/indeyka.jpg',
+  'Выпечка':'images/hleb.jpg',
+  'Десерты':'images/limonnyy-tart.jpg',
+  'Кремы и начинки':'images/cremcheese.jpg',
+  'Салаты':'images/bliny.jpg'
+};
+function addDividerBack(doc,cat){
+  var el=doc.createElement('div');el.className='sheet divider-back-sheet';
+  el.setAttribute('data-print-role','оборот разделителя: '+cat);
+  var image=dividerArt[cat]||'';
+  el.innerHTML=holesHTML()+'<div class="illustration-frame">'+
+    '<div class="illustration-top">❦ &nbsp; Моя кулинарная книга &nbsp; ❦</div>'+
+    (image?'<img src="'+esc(image)+'" alt="Акварельная иллюстрация: '+esc(cat)+'">':'<div class="illustration-ornament">❦</div>')+
+    '<div class="illustration-bottom">'+esc(cat)+'</div></div>';
+  doc.body.appendChild(el);return el;
 }
 function printList(list,portion,withDividers){
-  var old=document.getElementById('printFrame');
-  if(old) old.remove();
-  var f=document.createElement('iframe');
-  f.id='printFrame';
-  f.style.cssText='position:fixed;left:-10000px;top:0;width:148mm;height:210mm;border:0;opacity:0;pointer-events:none;';
-  document.body.appendChild(f);
-  var d=f.contentDocument||f.contentWindow.document;
-  d.open();
-  d.write('<!doctype html><html lang="ru"><head><meta charset="UTF-8">'+
-    '<title>Моя кулинарная книга — печать</title>'+
-    '<style>'+PRINT_CSS+'</style></head><body></body>');
-  d.close();
-  var hasPhoto=list.some(function(r){return !!r.photo});
-  var doPrint=function(){
-    try{
-      var ordered=withDividers?list.slice().sort(function(a,b){return categoryOrder().indexOf(assignments[a.id])-categoryOrder().indexOf(assignments[b.id])||a.id-b.id;}):list;
-      var entries=[],groups=[];
-      if(withDividers){
-        ordered.forEach(function(r){var cat=assignments[r.id];if(!groups.length||groups[groups.length-1].cat!==cat)groups.push({cat:cat,recipes:[]});groups[groups.length-1].recipes.push(r);});
-        var cover=addCoverPage(d);
-        // Reserve table-of-contents pages; fill page numbers after pagination.
-        var tocCount=Math.ceil((ordered.length+groups.length)/25),tocPlaceholders=[];
-        for(var ti=0;ti<tocCount;ti++){var placeholder=d.createElement('div');placeholder.className='sheet';d.body.appendChild(placeholder);tocPlaceholders.push(placeholder);}
-        groups.forEach(function(group){
-          entries.push({cat:group.cat});addDividerPage(d,group.cat);
-          group.recipes.forEach(function(r){entries.push({title:r.title,page:d.querySelectorAll('.sheet').length+1});paginateRecipe(d,r,portion);});
+  var old=document.getElementById('printFrame');if(old)old.remove();
+  var frame=document.createElement('iframe');frame.id='printFrame';
+  frame.style.cssText='position:fixed;left:-10000px;top:0;width:148mm;height:210mm;border:0;opacity:0;pointer-events:none;';
+  document.body.appendChild(frame);
+  var doc=frame.contentDocument||frame.contentWindow.document;
+  doc.open();doc.write('<!doctype html><html lang="ru"><head><meta charset="UTF-8"><title>Моя кулинарная книга — А5</title><style>'+PRINT_CSS+'</style></head><body></body></html>');doc.close();
+  try{
+    var ordered=withDividers?list.slice().sort(function(a,b){return categoryOrder().indexOf(assignments[a.id])-categoryOrder().indexOf(assignments[b.id])||a.id-b.id;}):list;
+    if(withDividers){
+      addCoverPage(doc);
+      addBlankPage(doc,'оборот обложки');
+      var groups=[];
+      ordered.forEach(function(r){
+        var cat=assignments[r.id];
+        if(!groups.length||groups[groups.length-1].cat!==cat)groups.push({cat:cat,recipes:[]});
+        groups[groups.length-1].recipes.push(r);
+      });
+      groups.forEach(function(group){
+        ensureNextFront(doc);
+        var front=addDividerPage(doc,group.cat);
+        front.setAttribute('data-print-role','лицо разделителя: '+group.cat);
+        addDividerBack(doc,group.cat);
+        group.recipes.forEach(function(r){
+          var pages=paginateRecipe(doc,r,portion);
+          pages.forEach(function(p,i){p.setAttribute('data-print-role','рецепт: '+r.title+' ('+(i+1)+'/'+pages.length+')');});
         });
-        var contents=[];
-        entries.forEach(function(e){if(contents.length>=25){var tocSheet=d.createElement('div');tocSheet.className='sheet';tocSheet.innerHTML=holesHTML()+'<div class="toc-frame"><div class="toc-title">Оглавление</div>'+contents.map(function(z){return z.cat?'<div class="toc-category">'+esc(z.cat)+'</div>':'<div class="toc-row"><span class="toc-name">'+esc(z.title)+'</span><span class="toc-page">'+z.page+'</span></div>'}).join('')+'</div>';tocPlaceholders.shift().replaceWith(tocSheet);contents=[];}contents.push(e);});
-        if(contents.length){var tocSheet=d.createElement('div');tocSheet.className='sheet';tocSheet.innerHTML=holesHTML()+'<div class="toc-frame"><div class="toc-title">Оглавление</div>'+contents.map(function(z){return z.cat?'<div class="toc-category">'+esc(z.cat)+'</div>':'<div class="toc-row"><span class="toc-name">'+esc(z.title)+'</span><span class="toc-page">'+z.page+'</span></div>'}).join('')+'</div>';tocPlaceholders.shift().replaceWith(tocSheet);}
-      }else{ordered.forEach(function(r){paginateRecipe(d,r,portion);});}
-    }catch(e){alert('Не удалось подготовить страницы для печати: '+e.message);return;}
-    Promise.all(Array.from(d.images).map(function(img){return img.complete?Promise.resolve():new Promise(function(resolve){img.onload=resolve;img.onerror=resolve;});})).then(function(){
-      setTimeout(function(){try{f.contentWindow.focus();f.contentWindow.print();}catch(e){alert('Печать не открылась: '+e.message);}},350);
-    });
-  };
-
-  if(hasPhoto){setTimeout(doPrint,600);}else{doPrint();}
+        ensureNextFront(doc);
+      });
+    }else{
+      ordered.forEach(function(r){paginateRecipe(doc,r,portion);});
+    }
+  }catch(e){alert('Не удалось подготовить страницы для печати: '+e.message);return;}
+  window.__lastPrintPlan=Array.from(doc.querySelectorAll('body > .sheet')).map(function(el,i){return {page:i+1,side:i%2===0?'лицо':'оборот',role:el.getAttribute('data-print-role')||'рецепт'};});
+  Promise.all(Array.from(doc.images).map(function(img){
+    if(img.complete)return Promise.resolve();
+    return new Promise(function(resolve){img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true});});
+  })).then(function(){setTimeout(function(){try{frame.contentWindow.focus();frame.contentWindow.print();}catch(e){alert('Печать не открылась: '+e.message);}},350);});
 }
 function printRecipe(){
   var r=recipes.find(function(x){return x.id===currentId});
