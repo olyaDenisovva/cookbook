@@ -6,31 +6,6 @@
 <meta name="theme-color" content="#f4f1ea">
 <title>Моя кулинарная книга</title>
 <style>
-  /* Универсальный блок ВАЖНО */
-.important-box {
-  margin: 22px 0;
-  padding: 16px 20px;
-  background: #eef0e8;
-  border: 1px solid #cbd5c4;
-  border-left: 4px solid #73856e;
-  border-radius: 12px;
-  break-inside: avoid;
-  page-break-inside: avoid;
-}
-
-.important-box strong {
-  display: block;
-  margin-bottom: 8px;
-  color: #55664f;
-  font: 700 15px Arial, sans-serif;
-  letter-spacing: 0.08em;
-}
-
-.important-box p {
-  margin: 0;
-  color: #332b24;
-  font: 15px/1.55 Arial, sans-serif;
-}
 :root{
   --bg:#f4f1ea; --paper:#fdfbf5; --ink:#332b24; --muted:#6f655a;
   --sage:#73856e; --sage-dark:#55664f; --gold:#a3814e; --terra:#b36c5f;
@@ -248,6 +223,11 @@ dialog{width:min(1400px,calc(100% - 28px));max-height:94dvh}
 .divider-frame{background:radial-gradient(ellipse at center,#fdf9f0,#e9efdf)}
 .divider-frame:after{content:'❦';position:absolute;bottom:24mm;color:#b7c3ab;font:28pt Georgia,serif}
 
+
+/* Универсальное предупреждение для рецептов */
+.important-box{margin:18px 0;padding:15px 18px;background:#eef0e8;border:1px solid #cbd5c4;border-left:4px solid #73856e;border-radius:12px;break-inside:avoid}
+.important-box strong{display:block;color:#55664f;font:700 14px Arial,sans-serif;letter-spacing:.08em;margin-bottom:7px}
+.important-box p{margin:0;color:#332b24;font:15px/1.5 Arial,sans-serif;white-space:pre-line}
 </style>
 </head>
 <body>
@@ -430,11 +410,7 @@ function renderDetail(){
   '<h3>Ингредиенты</h3><ul>'+ings+'</ul></div><div class="detail-column"><h3>Приготовление</h3>'+
   '<button class="step-toggle" id="stepToggle" aria-pressed="'+stepMode+'">'+(stepMode?'Показать все шаги':'Пошаговый режим')+'</button>'+
   (stepMode?'<section class="step-mode" aria-live="polite"><div class="step-counter">Шаг '+(stepIndex+1)+' из '+r.steps.length+'</div><div class="step-text">'+esc(r.steps[stepIndex])+'</div><div class="step-nav"><button data-step="prev" '+(stepIndex===0?'disabled':'')+'>← Назад</button><button data-step="next" '+(stepIndex===r.steps.length-1?'disabled':'')+'>Далее →</button></div></section>':'<ol>'+steps+'</ol>')+
-    (r.important
-  ? '<div class="important-box"><strong>ВАЖНО</strong><p>' +
-    esc(r.important) +
-    '</p></div>'
-  : '') +
+  (r.important?'<aside class="important-box"><strong>ВАЖНО</strong><p>'+esc(r.important)+'</p></aside>':'')+
   (r.notes?'<section class="recipe-notes"><h3>Заметки</h3><p>'+esc(r.notes)+'</p></section>':'')+
   '<div class="btns"><button class="btn-full" onclick="openPrint()">📖 Открыть полностью</button><button class="btn-print" onclick="printRecipe()">🖨 Распечатать</button></div></div></div>';
 }
@@ -484,6 +460,7 @@ function pageInner(r,steps,ings,k,isCont,startIdx,withNotes){
     }
     h+='<div class="sec">Приготовление (продолжение)</div>'+stepsHTML(steps,startIdx);
   }
+  if(withNotes && r.important) h+='<aside class="important-box"><strong>ВАЖНО</strong><p>'+esc(r.important)+'</p></aside>';
   if(withNotes) h+='<div class="notes"><b>Заметки</b>'+(r.notes?'<p class="note-text">'+esc(r.notes)+'</p>':'')+'<div class="write-area"></div></div>'; 
   return h;
 }
@@ -558,6 +535,9 @@ const PRINT_CSS = [
 '.cover-title{font:700 31pt/1.2 Georgia,serif;color:#4b5f45;max-width:90mm}',
 '.cover-sub{font:italic 12pt Georgia,serif;color:#82725d;margin-top:10mm}',
 '.divider-frame{background:#eff2e8}',
+'.important-box{margin:3mm 0;padding:2.5mm 3mm;background:#eef0e8;border:1px solid #cbd5c4;border-left:1mm solid #73856e;border-radius:2mm;break-inside:avoid;page-break-inside:avoid}',
+'.important-box strong{display:block;font:bold 9pt Arial,sans-serif;color:#55664f;margin-bottom:1.5mm}',
+'.important-box p{margin:0;font:9pt/1.4 Arial,sans-serif;color:#332b24;white-space:pre-line}',
 '.notes b{font-family:Georgia,serif;font-size:9pt;color:#4a3c2a;display:block;margin-bottom:1mm}',
 '.blank-frame{height:192mm}',
 '.illustration-frame{height:192mm;border:1.5px solid #c9b896;background:#f8f4e9;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8mm;position:relative}',
@@ -603,13 +583,13 @@ function paginateRecipe(doc,r,k){
       }
     }
     if(nextSteps.length===0 && nextIngs.length===0){
-      var notesEl=doc.createElement('div');notesEl.className='notes';notesEl.innerHTML='<b>Заметки</b>'+(r.notes?'<p class="note-text">'+esc(r.notes)+'</p>':'')+'<div class="write-area"></div>';
-      frame.appendChild(notesEl);
+      var extras=doc.createElement('div');extras.className='recipe-extras';
+      extras.innerHTML=(r.important?'<aside class="important-box"><strong>ВАЖНО</strong><p>'+esc(r.important)+'</p></aside>':'')+
+        '<div class="notes"><b>Заметки</b>'+(r.notes?'<p class="note-text">'+esc(r.notes)+'</p>':'')+'<div class="write-area"></div></div>';
+      frame.appendChild(extras);
       pages.push(el);
       if(frame.getBoundingClientRect().height>PAGE_INNER){
-        frame.removeChild(notesEl);
-        // Вместо отдельной почти пустой страницы заметок переносим
-        // последний шаг приготовления вместе с заметками, если это возможно.
+        frame.removeChild(extras);
         var movedSteps=[];
         var visibleSteps=el.querySelectorAll('ol.steps li');
         if(visibleSteps.length>1){
@@ -619,6 +599,10 @@ function paginateRecipe(doc,r,k){
         var np=buildPrintPage(doc,r,movedSteps,[],k,true,r.steps.length-movedSteps.length,true);
         doc.body.appendChild(np);
         pages.push(np);
+        // Если предупреждение длинное, не допускаем незаметного обрезания текста.
+        if(np.querySelector('.frame').getBoundingClientRect().height>PAGE_INNER){
+          console.warn('Предупреждение и заметки не помещаются на странице:',r.title);
+        }
       }
       break;
     }
