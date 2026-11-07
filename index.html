@@ -276,18 +276,24 @@ dialog{width:min(1400px,calc(100% - 28px));max-height:94dvh}
         Разделитель категории
       </label>
 
-      <select id="printCategory"
-        style="padding:13px;border:1px solid #ded8ca;
-        border-radius:10px;background:#fffdf8;
-        font:17px Georgia,serif;color:#332b24">
-        <option value="Завтраки">Завтраки</option>
-        <option value="Салаты">Салаты</option>
-        <option value="Закуски">Закуски</option>
-        <option value="Горячее">Горячее</option>
-        <option value="Выпечка">Выпечка</option>
-        <option value="Десерты">Десерты</option>
-        <option value="Кремы и начинки">Кремы и начинки</option>
-      </select>
+      
+<div id="printCategories"
+     style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px;background:#f5f4ed;border:1px solid #ded8ca;border-radius:12px">
+
+  <label><input type="checkbox" value="Завтраки"> Завтраки</label>
+  <label><input type="checkbox" value="Салаты"> Салаты</label>
+  <label><input type="checkbox" value="Закуски"> Закуски</label>
+  <label><input type="checkbox" value="Горячее"> Горячее</label>
+  <label><input type="checkbox" value="Выпечка"> Выпечка</label>
+  <label><input type="checkbox" value="Десерты"> Десерты</label>
+  <label><input type="checkbox" value="Кремы и начинки"> Кремы и начинки</label>
+
+  <label style="grid-column:1/-1;border-top:1px solid #ded8ca;padding-top:12px;font-weight:bold;color:#55664f">
+    <input type="checkbox" id="selectAllDividers">
+    Выбрать все
+  </label>
+</div>
+
 
       <button class="btn-print" onclick="printCategoryDivider()">
         Распечатать разделитель
@@ -997,18 +1003,34 @@ function printBookCover() {
   ]);
 }
 
+
 function printCategoryDivider() {
-  const category =
-    document.getElementById('printCategory').value;
+  const selected = Array.from(
+    document.querySelectorAll(
+      '#printCategories input[type="checkbox"]:checked:not(#selectAllDividers)'
+    )
+  ).map(input => input.value);
+
+  if (selected.length === 0) {
+    alert('Выберите хотя бы один разделитель.');
+    return;
+  }
+
+  const pages = [];
+
+  selected.forEach(function(category) {
+    // Лицевая сторона выбранного разделителя
+    pages.push(bookArtwork.dividers[category]);
+
+    // Оборот этого же листа
+    pages.push('images/divider-back.png');
+  });
 
   document.getElementById('printMenu').close();
 
-  // Лицевая сторона и универсальный оборот.
-  printArtworkPages([
-    bookArtwork.dividers[category],
-    'images/divider-back.png'
-  ]);
+  printArtworkPages(pages);
 }
+
 
 function printBook(){printList(recipes,1,true)}
 
