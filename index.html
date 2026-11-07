@@ -259,7 +259,20 @@ dialog{width:min(1400px,calc(100% - 28px));max-height:94dvh}
 
 <script src="recipes.js"></script>
 <script>
+/* Иллюстрации печатной книги */
+const bookArtwork = {
+  cover: 'images/book-cover.png',
 
+  dividers: {
+    'Завтраки': 'images/divider-breakfast.png',
+    'Салаты': 'images/divider-salads.png',
+    'Закуски': 'images/divider-snacks.png',
+    'Горячее': 'images/divider-mains.png',
+    'Выпечка': 'images/divider-baking.png',
+    'Десерты': 'images/divider-desserts.png',
+    'Кремы и начинки': 'images/divider-creams.png'
+  }
+};
 /* Категории и пути к фотографиям теперь задаются в recipes.js. */
 
 
@@ -624,6 +637,38 @@ function dividerHTML(cat){
     '<div class="divider-footer">С любовью к домашней кухне</div>'+
   '</div>';
 }
+  function artworkPage(doc, imagePath, isReverse) {
+  const page = doc.createElement('div');
+
+  page.className =
+    'sheet artwork-sheet' +
+    (isReverse ? ' reverse' : '');
+
+  page.innerHTML =
+    '<div class="artwork-inner">' +
+      '<img src="' + esc(imagePath) + '" alt="">' +
+    '</div>';
+
+  doc.body.appendChild(page);
+
+  return page;
+}
+
+function addCoverPage(doc) {
+  return artworkPage(doc, bookArtwork.cover, false);
+}
+
+function addIllustratedDivider(doc, category) {
+  const imagePath = bookArtwork.dividers[category];
+
+  if (!imagePath) return;
+
+  // Лицевая сторона листа
+  artworkPage(doc, imagePath, false);
+
+  // Оборот того же листа
+  artworkPage(doc, imagePath, true);
+}
 function addDividerPage(doc,cat){
   var el=doc.createElement('div');el.className='sheet divider-sheet';
   el.innerHTML=dividerHTML(cat);doc.body.appendChild(el);return el;
@@ -671,7 +716,37 @@ function printList(list,portion,withDividers){
   frame.style.cssText='position:fixed;left:-10000px;top:0;width:148mm;height:210mm;border:0;opacity:0;pointer-events:none;';
   document.body.appendChild(frame);
   var doc=frame.contentDocument||frame.contentWindow.document;
-  doc.open();doc.write('<!doctype html><html lang="ru"><head><meta charset="UTF-8"><title>Моя кулинарная книга — А5</title><style>'+PRINT_CSS+'</style></head><body></body></html>');doc.close();
+  doc.open();doc.write('<!doctype html><html lang="ru"><head><meta charset="UTF-8"><title>Моя кулинарная книга — А5</title><style>'+PRINT_CSS+'
+ /* Акварельные страницы печатной книги */
+.artwork-sheet {
+  width: 148mm;
+  height: 210mm;
+  position: relative;
+  overflow: hidden;
+  background: #fdf8ee;
+}
+
+.artwork-sheet img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.artwork-sheet .artwork-inner {
+  position: absolute;
+  top: 9mm;
+  right: 9mm;
+  bottom: 9mm;
+  left: 20mm;
+}
+
+.artwork-sheet.reverse .artwork-inner {
+  left: 9mm;
+  right: 20mm;
+}                      
+</style></head><body></body></html>');doc.close();
   try{
     var ordered=withDividers?list.slice().sort(function(a,b){return categoryOrder().indexOf(assignments[a.id])-categoryOrder().indexOf(assignments[b.id])||a.id-b.id;}):list;
     if(withDividers){
